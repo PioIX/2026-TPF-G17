@@ -38,9 +38,16 @@ El Diagrama Entidad-Relación se realizará posteriormente, una vez presentada l
 ![DER](./imagen.png)
 
 ## Diseño de la página
+![Inicio](./mi-proyecto-nextjs/public/2.png)
+![Inicio Sesion](./mi-proyecto-nextjs/public/3.png)
+![Registro](./mi-proyecto-nextjs/public/4.png)
+![Menu/paguina principal](./mi-proyecto-nextjs/public/5.png)
+![Continuacion de la paguina principal](./mi-proyecto-nextjs/public/6.png)
+![ejemplo de paguina segun eleccion](./mi-proyecto-nextjs/public/7.png)
+![carrito](./mi-proyecto-nextjs/public/8.png)
+![metodo de pago](./mi-proyecto-nextjs/public/9.png)
+![Cargar Saldo](./mi-proyecto-nextjs/public/10.png)
 
-Se realizarán aproximadamente 6 o 7 imágenes relacionadas con el diseño de la página.
-![Descripción de la imagen](./imagen.png)
 ## Organización del proyecto
 
 | Tarea | Responsable | Fecha estimada |
