@@ -10,3 +10,4 @@ export default function Registro() {
     </div>
   );
 }
+76
