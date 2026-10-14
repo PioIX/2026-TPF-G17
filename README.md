@@ -55,6 +55,6 @@ El Diagrama Entidad-Relación se realizará posteriormente, una vez presentada l
 | Login y Registro | Miranda / Fabiani | 15/10 |
 | Cargar saldo y abonar | Miranda / Reddel | 22/10 |
 | Cargar y eliminar productos | Fabiani / Poet | 30/10 |
-| Carrito de pedidos | Reddel / Poet | 06/10 |
-| Notificación de alerta | Miranda / Reddel | 14/10 |
-| Probar si funciona y corrección | Todos | 16/10 |
+| Carrito de pedidos | Reddel / Poet | 06/11 |
+| Notificación de alerta | Miranda / Reddel | 14/11 |
+| Probar si funciona y corrección | Todos | 16/11 |
