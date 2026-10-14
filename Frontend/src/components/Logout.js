@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 export default function Logout() {
   const router = useRouter();
 
-  const cerrarSesion = async () => {
+  const funcLogout = async () => {
     try {
       const response = await fetch("http://localhost:4000/logout", {
         method: "POST",
@@ -26,7 +26,7 @@ export default function Logout() {
   };
 
   return (
-    <Button onClick={cerrarSesion}>
+    <Button onClick={funcLogout}>
       Cerrar sesión
     </Button>
   );
