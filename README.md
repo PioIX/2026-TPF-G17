@@ -35,7 +35,7 @@ Esto beneficia al colegio porque evita que los alumnos lleguen tarde al aula y a
 ## DER
 
 El Diagrama Entidad-Relación se realizará posteriormente, una vez presentada la idea.
-![DER](./imagen.png)
+![DER](./Docs/DerTPF.png)
 
 ## Diseño de la página
 ![Inicio](./Frontend/public/2.png)
