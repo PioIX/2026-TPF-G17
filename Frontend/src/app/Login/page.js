@@ -21,7 +21,7 @@ export default function Login() {
 
       if (data.ok) {
         alert("¡Bienvenido!");
-        router.push("/Inicio");
+        router.push("/Home");
       } else {
         alert("Error: " + (data.mensaje || "Intente nuevamente"));
       }
