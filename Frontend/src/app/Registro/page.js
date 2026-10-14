@@ -3,14 +3,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [mail, setMail] = useState("");
+  const [contrasena, setContrasena] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const nuevoUsuario = { email, password };
+    const nuevoUsuario = { mail, contrasena };
 
     try {
       const response = await fetch("http://localhost:4000/register", {
@@ -22,7 +22,7 @@ export default function Register() {
 
       if (data.success || data.ok) {
         alert("¡Usuario registrado con éxito!");
-        router.push("/login");
+        router.push("/Login");
       } else {
         alert("Error al registrar: " + (data.mensaje || "Intente nuevamente"));
       }
@@ -36,23 +36,21 @@ export default function Register() {
     <div>
       <h1>Registro de Usuario</h1>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Email:</label>
+        <label>Mail:</label>
         <input
           type="email"
-          id="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          name="mail"
+          value={mail}
+          onChange={(e) => setMail(e.target.value)}
           required
         />
 
-        <label htmlFor="password">Contraseña:</label>
+        <label>Contraseña:</label>
         <input
           type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="contrasena"
+          value={contrasena}
+          onChange={(e) => setContrasena(e.target.value)}
           required
         />
 

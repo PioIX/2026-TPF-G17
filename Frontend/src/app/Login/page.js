@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [mail, setMail] = useState("");
+  const [contrasena, setContrasena] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -14,20 +14,22 @@ export default function Login() {
       const response = await fetch("http://localhost:4000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ mail, setContrasena }),
       });
 
       const data = await response.json();
 
       if (data.ok) {
         alert("¡Bienvenido!");
-        router.push("/");
+        router.push("/Inicio");
       } else {
         alert("Error: " + (data.mensaje || "Intente nuevamente"));
       }
     } catch (error) {
       console.error("Error de red en el fetch:", error);
-      alert("No se pudo conectar con el servidor");
+      alert("No se pudo conectar con el servidor"
+        
+      );
     }
   };
 
@@ -35,22 +37,20 @@ export default function Login() {
     <div>
       <h1>Iniciar sesión</h1>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Email:</label>
+        <label>Mail:</label>
         <input
-          type="email"
-          id="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="mail"
+          name="mail"
+          value={mail}
+          onChange={(e) => setMail(e.target.value)}
         />
 
-        <label htmlFor="password">Contraseña:</label>
+        <label>Contraseña:</label>
         <input
           type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="contrasena"
+          value={contrasena}
+          onChange={(e) => setContrasena(e.target.value)}
         />
 
         <button type="submit">Entrar</button>
