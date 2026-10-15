@@ -19,22 +19,17 @@ const SQL_CONFIGURATION_DATA =
  * @param {String} queryString Query que se desea realizar. Textual como se utilizaría en el MySQL Workbench.
  * @returns Respuesta de la base de datos. Suele ser un vector de objetos.
  */
-exports.realizarQuery = async function (queryString)
+exports.realizarQuery = async function (queryString, params = [])
 {
-	let returnObject;
 	let connection;
 	try
 	{
 		connection = await mySql.createConnection(SQL_CONFIGURATION_DATA);
-		returnObject = await connection.execute(queryString);
-	}
-	catch(err)
-	{
-		console.log(err);
+		const [resultado] = await connection.execute(queryString, params);
+		return resultado;
 	}
 	finally
 	{
-		if(connection && connection.end) connection.end();
+		if (connection && connection.end) await connection.end();
 	}
-	return returnObject[0];
 }

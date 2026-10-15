@@ -75,8 +75,8 @@ CREATE TABLE Alerta (
 
 
 INSERT INTO Clientes(mail, contrasena, es_admin) VALUES 
-    ('a@pioix.edu.ar', 'Admin', TRUE),
-    ('p@pioix.edu.ar', 'Profes', FALSE);
+    ('a@pioix.edu.ar', '123', TRUE),
+    ('p@pioix.edu.ar', '123', FALSE);
 
 INSERT INTO Pedidos (id_cliente, horario, total, estado) VALUES 
     (1, '10:10:00', 1500, 'Finalizado'),

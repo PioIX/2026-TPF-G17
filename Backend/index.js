@@ -1,3 +1,7 @@
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "pio.env") });
+console.log("MYSQL_HOST:", process.env.MYSQL_HOST);
+
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
