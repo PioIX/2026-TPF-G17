@@ -129,3 +129,81 @@ app.post("/login", async function (req, res) {
 app.post("/logout", function (req, res) {
   req.session.destroy(() => res.send({ res: "Sesión cerrada" }));
 });
+
+
+app.get("/productos", async function (req, res) {
+  try {
+    const productos = await realizarQuery("SELECT * FROM Productos");
+
+    res.send(productos);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+app.get("/perfil", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+
+    const usuario = await realizarQuery(
+      "SELECT mail, saldo FROM Clientes WHERE mail = ?",
+      [req.session.user]
+    );
+
+    if (usuario.length === 0) {
+      return res.status(404).send({ res: "Usuario no encontrado" });
+    }
+
+
+    const pedidos = await realizarQuery(
+      "SELECT * FROM Pedidos WHERE id_cliente = ? AND estado != 'entregado'",
+      [req.session.user]
+    );
+
+    res.send({
+      usuario: usuario[0],
+      pedidosActivos: pedidos
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+
+app.post("/cargar-saldo", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const { monto } = req.body;
+
+    if (!monto || monto <= 0) {
+      return res.send({ res: "El monto debe ser mayor a 0" });
+    }
+
+    const saldoActual = await realizarQuery(
+      "SELECT saldo FROM Clientes WHERE mail = ?",
+      [req.session.user]
+    );
+
+    if (saldoActual.length === 0) {
+      return res.status(404).send({ res: "Usuario no encontrado" });
+    }
+
+    await realizarQuery(
+      "UPDATE Clientes SET saldo = saldo + ? WHERE mail = ?",
+      [monto, req.session.user]
+    );
+
+    res.send({ res: "Saldo cargado con éxito" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
