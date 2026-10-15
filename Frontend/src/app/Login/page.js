@@ -14,22 +14,21 @@ export default function Login() {
       const response = await fetch("http://localhost:4000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mail, setContrasena }),
+        credentials: "include",
+        body: JSON.stringify({ mail, contrasena }),
       });
 
       const data = await response.json();
 
-      if (data.ok) {
+      if (response.ok) {
         alert("¡Bienvenido!");
-        router.push("/Home");
+        router.push("/home");
       } else {
-        alert("Error: " + (data.mensaje || "Intente nuevamente"));
+        alert("Error: " + (data.res || "Intente nuevamente"));
       }
     } catch (error) {
       console.error("Error de red en el fetch:", error);
-      alert("No se pudo conectar con el servidor"
-        
-      );
+      alert("No se pudo conectar con el servidor");
     }
   };
 
@@ -39,10 +38,11 @@ export default function Login() {
       <form onSubmit={handleSubmit}>
         <label>Mail:</label>
         <input
-          type="mail"
+          type="email"
           name="mail"
           value={mail}
           onChange={(e) => setMail(e.target.value)}
+          required
         />
 
         <label>Contraseña:</label>
@@ -51,6 +51,7 @@ export default function Login() {
           name="contrasena"
           value={contrasena}
           onChange={(e) => setContrasena(e.target.value)}
+          required
         />
 
         <button type="submit">Entrar</button>

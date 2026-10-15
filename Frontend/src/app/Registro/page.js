@@ -10,21 +10,20 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const nuevoUsuario = { mail, contrasena };
-
     try {
       const response = await fetch("http://localhost:4000/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nuevoUsuario),
+        body: JSON.stringify({ mail, contrasena }),
       });
+
       const data = await response.json();
 
-      if (data.success || data.ok) {
+      if (response.ok) {
         alert("¡Usuario registrado con éxito!");
-        router.push("/Login");
+        router.push("/login");
       } else {
-        alert("Error al registrar: " + (data.mensaje || "Intente nuevamente"));
+        alert("Error al registrar: " + (data.res || "Intente nuevamente"));
       }
     } catch (error) {
       console.error("Error de red en el fetch:", error);

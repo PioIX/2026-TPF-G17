@@ -22,7 +22,6 @@ const server = app.listen(PORT, () => {
   console.log(`Servidor NodeJS corriendo en http://localhost:${PORT}/`);
 });
 
-
 const io = new Server(server, {
   cors: {
     origin: ORIGENES,
@@ -80,7 +79,7 @@ app.post("/register", async function (req, res) {
     const { mail, contrasena } = req.body;
 
     if (!mail || !contrasena) {
-      return res.send({ res: "Todos los campos son obligatorios" });
+      return res.status(400).send({ res: "Todos los campos son obligatorios" });
     }
 
     const existente = await realizarQuery(
@@ -88,7 +87,7 @@ app.post("/register", async function (req, res) {
       [mail]
     );
     if (existente.length > 0) {
-      return res.send({ res: "Ya existe este usuario" });
+      return res.status(409).send({ res: "Ya existe este usuario" });
     }
 
     await realizarQuery(
@@ -105,18 +104,19 @@ app.post("/register", async function (req, res) {
 app.post("/login", async function (req, res) {
   try {
     const { mail, contrasena } = req.body;
+
     if (!mail || !contrasena) {
-      return res.send({ res: "No pueden haber campos vacíos" });
+      return res.status(400).send({ res: "No pueden haber campos vacíos" });
     }
 
     const usuario = await realizarQuery(
-      "SELECT mail,contrasena FROM Clientes WHERE mail = ? AND contrasena = ?",
+      "SELECT mail FROM Clientes WHERE mail = ? AND contrasena = ?",
       [mail, contrasena]
     );
 
     if (usuario.length > 0) {
       req.session.user = usuario[0].mail;
-      res.send({ res: "Login correcto", usuario: usuario[0] });
+      res.send({ res: "Login correcto" });
     } else {
       res.status(401).send({ res: "Mail o contraseña incorrectos" });
     }
