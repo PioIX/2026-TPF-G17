@@ -6,9 +6,24 @@ import Link from "next/link";
 import styles from "./page.module.css";
 
 export default function Home() {
-   
-    return (
-        <div className={styles.contenedorPrincipal}>
+  const [saldo, setSaldo] = useState(0);
+
+   useEffect(function () {
+    fetch("http://localhost:4000/saldo", {
+       method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include"
+    })
+      .then(function (respuesta) { return respuesta.json(); })
+      .then(function (datos) {
+        if (datos.saldo !== undefined) {
+          setSaldo(datos.saldo);
+        }
+      });
+  }, []);
+
+  return (
+    <div className={styles.contenedorPrincipal}>
       <title>Buffetazo - Inicio</title>
 
 
@@ -17,15 +32,15 @@ export default function Home() {
 
         <div className={styles.accionesHeader}>
           <div className={styles.badgeSaldo}>
-            Saldo: $0
+            Saldo: ${saldo}
           </div>
 
-          <Link href="/cargar-saldo" className={styles.btnCargarSaldo}>
+          <Link href="/cargarSaldo" className={styles.btnCargarSaldo}>
             + Cargar Saldo
           </Link>
 
           <Link href="/carrito" className={styles.btnCarrito}>
-            Carrito 
+            Carrito
           </Link>
 
           <Logout />
