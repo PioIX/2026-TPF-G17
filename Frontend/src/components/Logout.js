@@ -17,7 +17,7 @@ export default function Logout() {
 
       if (response.ok) {
         alert(data.res);
-        router.push("/Login");
+        router.push("/");
       }
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
