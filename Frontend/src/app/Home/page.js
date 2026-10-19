@@ -76,6 +76,12 @@ useEffect(function () {
           <img src="/bebidas.png" alt="Bebidas" />
         </Link>
       </main>
+      <section className={styles.seccionPedidos}>
+        <h2 className={styles.subtitulo}>Próximos pedidos</h2>
+
+  {cargandoPedidos ? (<p className={styles.cargando}>Cargando tus pedidos...</p>) : pedidos.length === 0 ? (
+    
+    <div className={styles.pedidosVacio}>No tenés pedidos en curso</div>) : (
     
     <div className={styles.listaPedidos}>
       {pedidos.map((pedido) => (
