@@ -26,8 +26,8 @@ export default function Logout() {
   };
 
   return (
-    <Button onClick={funcLogout}>
-      Cerrar sesión
+    <Button onClick={funcLogout} text="Cerrar sesión">
+      
     </Button>
   );
 }

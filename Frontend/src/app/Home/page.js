@@ -64,16 +64,20 @@ useEffect(function () {
         </div>
       </header>
       <main className={styles.bloques}>
-        <Link href="/almuerzo" className={styles.bloque}>
-          <img src="/almuerzo.png" alt="Almuerzo" />
+        <Link href="/sanguches" className={styles.bloque}>
+          <img src="/sanguchegenerico.png"/>
         </Link>
 
-        <Link href="/merienda" className={styles.bloque}>
-          <img src="/merienda.png" alt="Merienda" />
+        <Link href="/hamburguesas" className={styles.bloque}>
+          <img src="/hamburguesagenerica.png"/>
         </Link>
 
         <Link href="/bebidas" className={styles.bloque}>
-          <img src="/bebidas.png" alt="Bebidas" />
+          <img src="/bebidagenerica.png"/>
+        </Link>
+
+        <Link href="/snacks" className={styles.bloque}>
+          <img src="/snackgenerico.png"/>
         </Link>
       </main>
       <section className={styles.seccionPedidos}>
