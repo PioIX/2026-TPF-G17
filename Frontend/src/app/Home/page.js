@@ -25,7 +25,7 @@ export default function Home() {
           </Link>
 
           <Link href="/carrito" className={styles.btnCarrito}>
-            Carrito
+            Carrito 
           </Link>
 
           <Logout />
