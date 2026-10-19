@@ -44,8 +44,22 @@ export default function Home() {
           </Link>
 
           <Logout />
+
         </div>
       </header>
+      <main className={styles.bloques}>
+  <Link href="/almuerzo" className={styles.bloque}>
+    <img src="/almuerzo.png" alt="Almuerzo" />
+  </Link>
+
+  <Link href="/merienda" className={styles.bloque}>
+    <img src="/merienda.png" alt="Merienda" />
+  </Link>
+
+  <Link href="/bebidas" className={styles.bloque}>
+    <img src="/bebidas.png" alt="Bebidas" />
+  </Link>
+</main>
     </div>
   );
 }
