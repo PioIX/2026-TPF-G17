@@ -8,11 +8,11 @@ import styles from "./page.module.css";
 export default function Home() {
   const [saldo, setSaldo] = useState(0);
 
-   useEffect(function () {
+  useEffect(function () {
     fetch("http://localhost:4000/saldo", {
-       method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include"
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include"
     })
       .then(function (respuesta) { return respuesta.json(); })
       .then(function (datos) {
@@ -48,18 +48,18 @@ export default function Home() {
         </div>
       </header>
       <main className={styles.bloques}>
-  <Link href="/almuerzo" className={styles.bloque}>
-    <img src="/almuerzo.png" alt="Almuerzo" />
-  </Link>
+        <Link href="/almuerzo" className={styles.bloque}>
+          <img src="/almuerzo.png" alt="Almuerzo" />
+        </Link>
 
-  <Link href="/merienda" className={styles.bloque}>
-    <img src="/merienda.png" alt="Merienda" />
-  </Link>
+        <Link href="/merienda" className={styles.bloque}>
+          <img src="/merienda.png" alt="Merienda" />
+        </Link>
 
-  <Link href="/bebidas" className={styles.bloque}>
-    <img src="/bebidas.png" alt="Bebidas" />
-  </Link>
-</main>
+        <Link href="/bebidas" className={styles.bloque}>
+          <img src="/bebidas.png" alt="Bebidas" />
+        </Link>
+      </main>
     </div>
   );
 }

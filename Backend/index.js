@@ -191,7 +191,19 @@ app.post("/cargar-saldo", async function (req, res) {
     if (!monto || monto <= 0) {
       return res.send({ res: "El monto debe ser mayor a 0" });
     }
+   
+    const resultado = await realizarQuery(
+      "SELECT stock FROM Productos WHERE id_producto = ?",
+      [id_producto]
+    );
+    if (resultado.length === 0) {
+      return res.status(404).send({ res: "El producto no existe" });
+    }
 
+    const cantidadActual = (req.session.carrito && req.session.carrito[id_producto]) || 0;
+    if (cantidadActual + 1 > resultado[0].stock) {
+      return res.status(400).send({ res: "No hay más stock disponible" });
+    }
     const saldoActual = await realizarQuery(
       "SELECT saldo FROM Clientes WHERE mail = ?",
       [req.session.user]
@@ -229,6 +241,69 @@ app.get("/saldo", async function (req, res) {
     }
 
     res.send({ saldo: resultado[0].saldo });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+
+app.post("/agregar-carrito", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const { id_producto } = req.body;
+
+    if (!req.session.carrito) {
+      req.session.carrito = {};
+    }
+
+    if (req.session.carrito[id_producto]) {
+      req.session.carrito[id_producto] = req.session.carrito[id_producto] + 1;
+    } else {
+      req.session.carrito[id_producto] = 1;
+    }
+
+    res.send({ res: "Producto agregado" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+app.get("/carrito", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const carrito = req.session.carrito || {};
+    const ids = Object.keys(carrito).map(Number).filter(Number.isInteger);
+
+    if (ids.length === 0) {
+      return res.send({ productos: [], total: 0 });
+    }
+
+    const resultado = await realizarQuery(
+      "SELECT id_producto, nombre, precio, stock, descripcion, imagen FROM Productos WHERE id_producto IN (?)",
+      [ids]
+    );
+
+    const productos = resultado.map((p) => ({
+      id_producto: p.id_producto,
+      nombre: p.nombre,
+      precio: p.precio,
+      stock: p.stock,
+      descripcion: p.descripcion,
+      imagen: p.imagen,
+      cantidad: carrito[p.id_producto],
+    }));
+
+    const total = productos.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
+
+    res.send({ productos, total });
   } catch (error) {
     console.error(error);
     res.status(500).send({ res: "Error del servidor" });
