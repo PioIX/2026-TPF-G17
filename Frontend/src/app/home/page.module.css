@@ -235,3 +235,116 @@
   object-fit: cover;
   display: block;
 }
+
+.seccionPedidos {
+  margin-bottom: 1.5rem;
+}
+
+.listaPedidos {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .listaPedidos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.tarjetaPedido {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-left: 6px solid #f97316;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cabeceraPedido {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.numeroPedido {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.estadoPedido {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.estadoPendiente {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.estadoPreparacion {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.estadoListo {
+  background-color: #22c55e;
+  color: #ffffff;
+}
+
+.productosPedido {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.itemPedido {
+  background-color: #f3f4f6;
+  color: #374151;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+}
+
+.piePedido {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.horarioRetiro {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.horarioRetiro strong {
+  color: #1f2937;
+  font-size: 1.125rem;
+}
+
+.totalPedido {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ea580c;
+}
+
+.pedidosVacio {
+  background-color: #ffffff;
+  color: #6b7280;
+  border: 2px dashed #d1d5db;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  text-align: center;
+}

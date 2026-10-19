@@ -248,7 +248,7 @@ app.get("/saldo", async function (req, res) {
 });
 
 
-app.post("/agregar-carrito", async function (req, res) {
+app.post("/agregarCarrito", async function (req, res) {
   try {
     if (!req.session.user) {
       return res.status(401).send({ res: "No hay sesión activa" });

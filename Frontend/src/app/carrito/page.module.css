@@ -1,0 +1,139 @@
+.contenedorPrincipal {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  color: #1f2937;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* HEADER */
+.header {
+  background-color: #f97316;
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tituloHeader {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.btnVolver {
+  background-color: #ffffff;
+  color: #ea580c;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* CONTENIDO */
+.contenidoPrincipal {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.vacio {
+  background-color: #ffffff;
+  color: #6b7280;
+  border: 2px dashed #d1d5db;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+/* ITEMS */
+.itemCarrito {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.imagenItem {
+  width: 5rem;
+  height: 5rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  flex-shrink: 0;
+}
+
+.infoItem {
+  flex: 1;
+}
+
+.nombreItem {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+}
+
+.cantidadItem {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.precioItem {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ea580c;
+}
+
+/* RESUMEN */
+.resumen {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-left: 6px solid #f97316;
+  padding: 1rem 1.25rem;
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.totalTexto {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.btnConfirmar {
+  background-color: #16a34a;
+  color: #ffffff;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btnConfirmar:hover {
+  background-color: #15803d;
+}
+
+/* CELULAR */
+@media (max-width: 520px) {
+  .itemCarrito {
+    flex-wrap: wrap;
+  }
+
+  .resumen {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+}
