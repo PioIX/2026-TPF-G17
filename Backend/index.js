@@ -212,3 +212,25 @@ app.post("/cargar-saldo", async function (req, res) {
     res.status(500).send({ res: "Error del servidor" });
   }
 });
+
+app.get("/saldo", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const resultado = await realizarQuery(
+      "SELECT saldo FROM Clientes WHERE mail = ?",
+      [req.session.user]
+    );
+
+    if (resultado.length === 0) {
+      return res.status(404).send({ res: "Usuario no encontrado" });
+    }
+
+    res.send({ saldo: resultado[0].saldo });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
