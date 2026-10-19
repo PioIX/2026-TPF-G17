@@ -216,3 +216,22 @@
 .btnAgregar:hover {
   background-color: #ea580c;
 }
+
+.bloques {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.bloque {
+  flex: 1;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.bloque img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
