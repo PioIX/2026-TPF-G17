@@ -316,3 +316,17 @@ app.get("/carrito", async function (req, res) {
     res.status(500).send({ res: "Error del servidor" });
   }
 });
+
+app.delete("/quitar-carrito/:id_producto", function (req, res) {
+  if (!req.session.user) {
+    return res.status(401).send({ res: "No hay sesión activa" });
+  }
+
+  const id_producto = req.params.id_producto;
+
+  if (req.session.carrito && req.session.carrito[id_producto]) {
+    delete req.session.carrito[id_producto];
+  }
+
+  res.send({ res: "Producto eliminado del carrito" });
+});

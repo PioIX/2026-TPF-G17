@@ -5,7 +5,7 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* HEADER */
+
 .header {
   background-color: #f97316;
   color: #ffffff;
@@ -31,7 +31,7 @@
   text-decoration: none;
 }
 
-/* CONTENIDO */
+
 .contenidoPrincipal {
   max-width: 48rem;
   margin: 0 auto;
@@ -47,7 +47,7 @@
   text-align: center;
 }
 
-/* ITEMS */
+
 .itemCarrito {
   background-color: #ffffff;
   border-radius: 0.75rem;
@@ -89,7 +89,7 @@
   color: #ea580c;
 }
 
-/* RESUMEN */
+
 .resumen {
   background-color: #ffffff;
   border-radius: 0.75rem;
@@ -125,7 +125,7 @@
   background-color: #15803d;
 }
 
-/* CELULAR */
+
 @media (max-width: 520px) {
   .itemCarrito {
     flex-wrap: wrap;
@@ -136,4 +136,11 @@
     align-items: stretch;
     text-align: center;
   }
+}
+
+.btnEliminar {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
 }

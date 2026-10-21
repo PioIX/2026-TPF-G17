@@ -8,16 +8,30 @@ export default function Carrito() {
   const [productos, setProductos] = useState([]);
   const [total, setTotal] = useState(0);
 
-  useEffect(function () {
-    fetch("http://localhost:4000/carrito", { credentials: "include" })
+  function cargarCarrito() {
+  fetch("http://localhost:4000/carrito", { credentials: "include" })
+    .then(function (respuesta) { return respuesta.json(); })
+    .then(function (datos) {
+      if (datos.productos !== undefined) {
+        setProductos(datos.productos);
+        setTotal(datos.total);
+      }
+    });
+}
+
+useEffect(function () {
+  cargarCarrito();
+}, []);
+
+
+  function eliminar(id_producto) {
+    fetch("http://localhost:4000/quitar-carrito/" + id_producto, {
+      method: "DELETE",
+      credentials: "include"
+    })
       .then(function (respuesta) { return respuesta.json(); })
-      .then(function (datos) {
-        if (datos.productos !== undefined) {
-          setProductos(datos.productos);
-          setTotal(datos.total);
-        }
-      });
-  }, []);
+      .then(function () { cargarCarrito(); });
+  }
 
   return (
     <div className={styles.contenedorPrincipal}>
@@ -40,6 +54,10 @@ export default function Carrito() {
                     <p className={styles.cantidadItem}>Cantidad: {producto.cantidad}</p>
                   </div>
                   <span className={styles.precioItem}>${producto.precio * producto.cantidad}</span>
+                  <button
+                    className={styles.btnEliminar}
+                    onClick={function () { eliminar(producto.id_producto); }}
+                  >🗑</button>
                 </div>
               );
             })}
