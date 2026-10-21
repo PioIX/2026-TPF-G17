@@ -1,6 +1,8 @@
+
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import styles from "./register.module.css";
 
 export default function Register() {
   const [mail, setMail] = useState("");
@@ -32,29 +34,46 @@ export default function Register() {
   };
 
   return (
-    <div>
-      <h1>Registro de Usuario</h1>
-      <form onSubmit={handleSubmit}>
-        <label>Mail:</label>
-        <input
-          type="email"
-          name="mail"
-          value={mail}
-          onChange={(e) => setMail(e.target.value)}
-          required
-        />
+    <div className={styles.contenedorPrincipal}>
+      <main className={styles.contenedorRegister}>
+        <div className={styles.tarjetaRegister}>
+          <h1 className={styles.tituloRegister}>Registro de Usuario</h1>
 
-        <label>Contraseña:</label>
-        <input
-          type="password"
-          name="contrasena"
-          value={contrasena}
-          onChange={(e) => setContrasena(e.target.value)}
-          required
-        />
+          <p className={styles.descripcionRegister}>
+            Creá tu cuenta para comenzar.
+          </p>
 
-        <button type="submit">Registrarse</button>
-      </form>
+          <form className={styles.formularioRegister} onSubmit={handleSubmit}>
+            <div className={styles.campoRegister}>
+              <label className={styles.labelRegister}>Mail:</label>
+              <input
+                className={styles.inputRegister}
+                type="email"
+                name="mail"
+                value={mail}
+                onChange={(e) => setMail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className={styles.campoRegister}>
+              <label className={styles.labelRegister}>Contraseña:</label>
+              <input
+                className={styles.inputRegister}
+                type="password"
+                name="contrasena"
+                value={contrasena}
+                onChange={(e) => setContrasena(e.target.value)}
+                required
+              />
+            </div>
+
+            <button className={styles.btnRegister} type="submit">
+              Registrarse
+            </button>
+          </form>
+        </div>
+      </main>
     </div>
   );
 }
