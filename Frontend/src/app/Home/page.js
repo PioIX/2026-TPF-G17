@@ -1,14 +1,34 @@
 "use client";
 
-import Logout from "@/components/Logout";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [saldo, setSaldo] = useState(0);
   const [pedidos, setPedidos] = useState([]);
   const [cargandoPedidos, setCargandoPedidos] = useState(true);
+  const router = useRouter();
+
+  async function cerrarSesion() {
+    try {
+      const response = await fetch("http://localhost:4000/logout", {
+        method: "POST",
+        credentials: "include"
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.res);
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      alert("No se pudo conectar con el servidor");
+    }
+  }
 
 useEffect(function () {
   fetch("http://localhost:4000/carrito", {
@@ -59,7 +79,7 @@ useEffect(function () {
             Carrito
           </Link>
 
-          <Logout />
+          <button onClick={cerrarSesion} className={styles.btnLogout}>Cerrar sesión</button>
 
         </div>
       </header>

@@ -2,7 +2,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import styles from "./login.module.css";
+import styles from "./page.module.css";
 
 export default function Login() {
   const [mail, setMail] = useState("");
