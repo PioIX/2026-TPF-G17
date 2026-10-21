@@ -88,7 +88,7 @@ useEffect(function () {
           <img src="/sanguchegenerico.png"/>
         </Link>
 
-        <Link href="/almuerzo" className={styles.bloque}>
+        <Link href="/hamburguesas" className={styles.bloque}>
           <img src="/hamburguesagenerica.png"/>
         </Link>
 
