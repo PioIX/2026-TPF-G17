@@ -1,6 +1,8 @@
+
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import styles from "./login.module.css";
 
 export default function Login() {
   const [mail, setMail] = useState("");
@@ -33,29 +35,46 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <h1>Iniciar sesión</h1>
-      <form onSubmit={handleSubmit}>
-        <label>Mail:</label>
-        <input
-          type="email"
-          name="mail"
-          value={mail}
-          onChange={(e) => setMail(e.target.value)}
-          required
-        />
+    <div className={styles.contenedorPrincipal}>
+      <main className={styles.contenedorLogin}>
+        <div className={styles.tarjetaLogin}>
+          <h1 className={styles.tituloLogin}>Iniciar sesión</h1>
 
-        <label>Contraseña:</label>
-        <input
-          type="password"
-          name="contrasena"
-          value={contrasena}
-          onChange={(e) => setContrasena(e.target.value)}
-          required
-        />
+          <p className={styles.descripcionLogin}>
+            Ingresá a tu cuenta para continuar.
+          </p>
 
-        <button type="submit">Entrar</button>
-      </form>
+          <form className={styles.formularioLogin} onSubmit={handleSubmit}>
+            <div className={styles.campoLogin}>
+              <label className={styles.labelLogin}>Mail:</label>
+              <input
+                className={styles.inputLogin}
+                type="email"
+                name="mail"
+                value={mail}
+                onChange={(e) => setMail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className={styles.campoLogin}>
+              <label className={styles.labelLogin}>Contraseña:</label>
+              <input
+                className={styles.inputLogin}
+                type="password"
+                name="contrasena"
+                value={contrasena}
+                onChange={(e) => setContrasena(e.target.value)}
+                required
+              />
+            </div>
+
+            <button className={styles.btnLogin} type="submit">
+              Entrar
+            </button>
+          </form>
+        </div>
+      </main>
     </div>
   );
 }
