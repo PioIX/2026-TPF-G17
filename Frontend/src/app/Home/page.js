@@ -11,7 +11,7 @@ export default function Home() {
   const [cargandoPedidos, setCargandoPedidos] = useState(true);
 
 useEffect(function () {
-  fetch("http://localhost:4000/agregarCarrito", {
+  fetch("http://localhost:4000/carrito", {
     method: "GET",
     credentials: "include"
   })
@@ -68,7 +68,7 @@ useEffect(function () {
           <img src="/sanguchegenerico.png"/>
         </Link>
 
-        <Link href="/hamburguesas" className={styles.bloque}>
+        <Link href="/almuerzo" className={styles.bloque}>
           <img src="/hamburguesagenerica.png"/>
         </Link>
 

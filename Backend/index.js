@@ -240,7 +240,7 @@ app.get("/saldo", async function (req, res) {
       return res.status(404).send({ res: "Usuario no encontrado" });
     }
 
-    res.send({ Saldo: resultado[0].cantidad_saldo });
+    res.send({ saldo: resultado[0].cantidad_saldo });
   } catch (error) {
     console.error(error);
     res.status(500).send({ res: "Error del servidor" });
