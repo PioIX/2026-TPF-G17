@@ -180,51 +180,6 @@ app.get("/perfil", async function (req, res) {
 });
 
 
-app.post("/cargar-saldo", async function (req, res) {
-  try {
-    if (!req.session.user) {
-      return res.status(401).send({ res: "No hay sesión activa" });
-    }
-
-    const { monto } = req.body;
-
-    if (!monto || monto <= 0) {
-      return res.send({ res: "El monto debe ser mayor a 0" });
-    }
-   
-    const resultado = await realizarQuery(
-      "SELECT stock FROM Productos WHERE id_producto = ?",
-      [id_producto]
-    );
-    if (resultado.length === 0) {
-      return res.status(404).send({ res: "El producto no existe" });
-    }
-
-    const cantidadActual = (req.session.carrito && req.session.carrito[id_producto]) || 0;
-    if (cantidadActual + 1 > resultado[0].stock) {
-      return res.status(400).send({ res: "No hay más stock disponible" });
-    }
-    const saldoActual = await realizarQuery(
-      "SELECT saldo FROM Clientes WHERE mail = ?",
-      [req.session.user]
-    );
-
-    if (saldoActual.length === 0) {
-      return res.status(404).send({ res: "Usuario no encontrado" });
-    }
-
-    await realizarQuery(
-      "UPDATE Clientes SET saldo = saldo + ? WHERE mail = ?",
-      [monto, req.session.user]
-    );
-
-    res.send({ res: "Saldo cargado con éxito" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ res: "Error del servidor" });
-  }
-});
-
 app.get("/saldo", async function (req, res) {
   try {
     if (!req.session.user) {
@@ -232,7 +187,7 @@ app.get("/saldo", async function (req, res) {
     }
 
     const resultado = await realizarQuery(
-      "SELECT cantidad_saldo FROM Clientes WHERE mail = ?",
+      "SELECT saldo FROM Clientes WHERE mail = ?",
       [req.session.user]
     );
 
@@ -240,7 +195,7 @@ app.get("/saldo", async function (req, res) {
       return res.status(404).send({ res: "Usuario no encontrado" });
     }
 
-    res.send({ saldo: resultado[0].cantidad_saldo });
+    res.send({ saldo: resultado[0].saldo });
   } catch (error) {
     console.error(error);
     res.status(500).send({ res: "Error del servidor" });
@@ -255,12 +210,12 @@ app.post("/cargar-saldo", async function (req, res) {
 
     const monto = Number(req.body.monto);
 
-    if (!monto || monto < 0) {
+    if (!monto || monto <= 0) {
       return res.status(400).send({ res: "El monto debe ser mayor a 0" });
     }
 
     const saldoActual = await realizarQuery(
-      "SELECT cantidad_saldo FROM Clientes WHERE mail = ?",
+      "SELECT saldo FROM Clientes WHERE mail = ?",
       [req.session.user]
     );
 
@@ -269,7 +224,7 @@ app.post("/cargar-saldo", async function (req, res) {
     }
 
     await realizarQuery(
-      "UPDATE Clientes SET cantidad_saldo = cantidad_saldo + ? WHERE mail = ?",
+      "UPDATE Clientes SET saldo = saldo + ? WHERE mail = ?",
       [monto, req.session.user]
     );
 
@@ -329,4 +284,18 @@ app.delete("/quitar-carrito/:id_producto", function (req, res) {
   }
 
   res.send({ res: "Producto eliminado del carrito" });
+});
+
+app.get("/productos/:categoria", async function (req, res) {
+  try {
+    const productos = await realizarQuery(
+      "SELECT * FROM Productos WHERE categoria = ?",
+      [req.params.categoria]
+    );
+
+    res.send(productos);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
 });

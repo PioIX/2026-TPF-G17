@@ -15,6 +15,7 @@ CREATE TABLE Clientes (
     mail VARCHAR(100),
     contrasena VARCHAR(100),
     es_admin BOOL,
+    saldo DECIMAL(10,2) NOT NULL DEFAULT 0,
     PRIMARY KEY (id_cliente)
 );
 
@@ -22,6 +23,7 @@ CREATE TABLE Clientes (
 CREATE TABLE Productos (
     id_producto INT AUTO_INCREMENT,
     nombre VARCHAR(100),
+    categoria VARCHAR(100),
     precio INT,
     stock INT,
     descripcion VARCHAR(100),
@@ -34,7 +36,7 @@ CREATE TABLE Saldo (
     id_saldo INT AUTO_INCREMENT,
     id_cliente INT,
     metodo_pago VARCHAR(100),
-    cantidad_saldo INT,
+    cantidad_saldo BIGINT,
     PRIMARY KEY (id_saldo),
     FOREIGN KEY (id_cliente) REFERENCES Clientes(id_cliente)
 );
@@ -86,9 +88,24 @@ INSERT INTO Saldo (id_cliente, metodo_pago, cantidad_saldo) VALUES
     (1, 'Mercado Pago', 20000),
     (2, 'Efectivo', 100);
     
-INSERT INTO Pedidos(id_cliente, horario, total, estado) VALUES 
-    (1, '10:10:00', 2500, 'Finalizado'),
-    (2, '08:40:00', 2000, 'En Preparacion');
+INSERT INTO Productos (nombre, categoria, precio, stock, descripcion, imagen) VALUES
+    ('sanguchequeso', 'Sanguches', 5000, 20, 'Queso', 'sanguchequeso.png'),
+    ('sanguchejamonyqueso', 'Sanguches', 5000, 20, 'Jamon y Queso', 'sanguchejamonyqueso.png'),
+    ('sanguchesalameyqueso', 'Sanguches', 5000, 20, 'Salame y Queso', 'sanguchesalameyqueso.png'),
+    ('sanguchelechugaytomate', 'Sanguches', 5000, 20, 'Lechuga y Tomate', 'sanguchelechugaytomate.png'),
+    ('hamburguesacarne', 'Hamburguesas', 10000, 20, 'Carne', 'hamburguesacarne.png'),
+	('hamburguesaqueso', 'Hamburguesas', 10000, 20, 'Carne,queso', 'hamburguesaqueso.png'),
+	('hamburguesaquesohuevopanceta ', 'Hamburguesas', 10000, 20, 'Carne,queso,huevo,panceta', 'hamburguesaquesohuevopanceta.png'),
+    ('hamburguesaquesolechugatomate ', 'Hamburguesas', 10000, 20, 'Carne,queso,lechuga,tomate', 'hamburguesaquesolechugatomate.png'),
+    ('bolsapapasfritas', 'Snacks', 3000, 30, 'Papas Lays', 'bolsapapasfritas.png'),
+    ('bolsadoritos', 'Snacks', 3000, 30, 'Doritos', 'bolsadoritos.png'),
+    ('bolsachetos', 'Snacks', 3000, 30, 'Chetos', 'bolsachetos.png'),
+    ('bolsatakis', 'Snacks', 3000, 30, 'Takis', 'bolsatakis.png'),
+    ('cocacola', 'Bebidas', 2000, 30, 'Coca Cola', 'cocacola.png'),
+    ('sprite', 'Bebidas', 2000, 30, 'Sprite', 'sprite.png'),
+    ('fanta', 'Bebidas', 2000, 30, 'Fanta', 'fanta.png'),
+    ('agua', 'Bebidas', 2000, 30, 'Agua', 'agua.png');
+
 
 INSERT INTO Alerta(id_cliente, id_pedido, mensaje) VALUES
     (1, 1, 'Tu pedido esta listo'),
