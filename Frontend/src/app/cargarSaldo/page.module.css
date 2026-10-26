@@ -1,0 +1,140 @@
+/* CONTENEDOR PRINCIPAL Y HEADER DE LA PÁGINA */
+.contenedorPrincipal {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  color: #1f2937;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.header {
+  background-color: #f97316;
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tituloHeader {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.accionesHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btnVolverHeader {
+  background-color: #ffffff;
+  color: #ea580c;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: background-color 0.2s, color 0.2s;
+  display: inline-block;
+}
+
+.btnVolverHeader:hover {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.contenidoPrincipal {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* TARJETA CENTRADA DE CARGAR SALDO */
+.seccionCargarSaldo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1rem;
+}
+
+.tarjetaCargarSaldo {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.tituloCargarSaldo {
+  color: #ea580c;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+}
+
+/* FORMULARIO E INPUTS */
+.formularioCargar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.inputMonto {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.inputMonto:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+}
+
+/* BOTONES */
+.btnCargarSubmit {
+  width: 100%;
+  background-color: #f97316;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btnCargarSubmit:hover {
+  background-color: #ea580c;
+}
+
+.btnVolverTarjeta {
+  display: block;
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  background-color: transparent;
+  color: #f97316;
+  border: 2px solid #f97316;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.btnVolverTarjeta:hover {
+  background-color: #f97316;
+  color: #ffffff;
+}
