@@ -22,5 +22,25 @@ export default function Sanguches() {
       });
   }, []);
 
+  return (
+    <main className={styles.main}>
+      <Link href="/home" className={styles.volver}>← Volver</Link>
+      <h1 className={styles.titulo}>Sanguches</h1>
+
+      {cargando && <p>Cargando...</p>}
+      {!cargando && productos.length === 0 && <p>No hay productos disponibles</p>}
+
+      <div className={styles.lista}>
+        {productos.map((p) => (
+          <div key={p.id_producto} className={styles.card}>
+            //agregar las fotos
+            <h3>{p.nombre}</h3>
+            <p>{p.descripcion}</p>
+            <p className={styles.precio}>${p.precio}</p>
+          </div>
+        ))}
+      </div>
+    </main>
+  );
 
 }
