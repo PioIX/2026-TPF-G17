@@ -286,11 +286,49 @@ app.delete("/quitar-carrito/:id_producto", function (req, res) {
   res.send({ res: "Producto eliminado del carrito" });
 });
 
-app.get("/productos/:categoria", async function (req, res) {
+app.get("/sanguches", async function (req, res) {
   try {
     const productos = await realizarQuery(
-      "SELECT * FROM Productos WHERE categoria = ?",
-      [req.params.categoria]
+      "SELECT * FROM Productos WHERE categoria = 'Sanguches'"
+    );
+
+    res.send(productos);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+app.get("/hamburguesas", async function (req, res) {
+  try {
+    const productos = await realizarQuery(
+      "SELECT * FROM Productos WHERE categoria = 'Hamburguesas'"
+    );
+
+    res.send(productos);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+app.get("/snacks", async function (req, res) {
+  try {
+    const productos = await realizarQuery(
+      "SELECT * FROM Productos WHERE categoria = 'Snacks'"
+    );
+
+    res.send(productos);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+app.get("/bebidas", async function (req, res) {
+  try {
+    const productos = await realizarQuery(
+      "SELECT * FROM Productos WHERE categoria = 'Bebidas'"
     );
 
     res.send(productos);
