@@ -337,3 +337,39 @@ app.get("/bebidas", async function (req, res) {
     res.status(500).send({ res: "Error del servidor" });
   }
 });
+
+app.post("/agregar-carrito", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const { id_producto } = req.body;
+
+    const resultado = await realizarQuery(
+      "SELECT stock FROM Productos WHERE id_producto = ?",
+      [id_producto]
+    );
+
+    if (resultado.length === 0) {
+      return res.status(404).send({ res: "El producto no existe" });
+    }
+
+    if (!req.session.carrito) {
+      req.session.carrito = {};
+    }
+
+    const cantidadActual = req.session.carrito[id_producto] || 0;
+
+    if (cantidadActual + 1 > resultado[0].stock) {
+      return res.status(400).send({ res: "No hay más stock disponible" });
+    }
+
+    req.session.carrito[id_producto] = cantidadActual + 1;
+
+    res.send({ res: "Producto agregado al carrito" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});

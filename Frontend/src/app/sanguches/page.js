@@ -22,6 +22,17 @@ export default function Sanguches() {
       });
   }, []);
 
+  function agregar(id_producto) {
+    fetch("http://localhost:4000/agregar-carrito", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ id_producto }),
+    })
+      .then((response) => response.json())
+      .then((data) => alert(data.res))
+      .catch(() => alert("No se pudo conectar con el servidor"));
+  }
   return (
     <main className={styles.main}>
       <Link href="/home" className={styles.volver}>
@@ -41,6 +52,9 @@ export default function Sanguches() {
             <h3>{p.nombre}</h3>
             <p>{p.descripcion}</p>
             <p className={styles.precio}>${p.precio}</p>
+            <button className={styles.btnAgregar} onClick={() => agregar(p.id_producto)}>
+              Agregar
+            </button>
           </div>
         ))}
       </div>
