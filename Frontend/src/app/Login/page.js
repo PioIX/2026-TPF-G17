@@ -70,7 +70,7 @@ export default function Login() {
             </div>
 
             <button className={styles.btnLogin} type="submit">
-              Entrar
+              Karina
             </button>
           </form>
         </div>
