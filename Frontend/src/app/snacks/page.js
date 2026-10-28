@@ -4,8 +4,8 @@ import Link from "next/link";
 import styles from "./page.module.css";
 
 export default function Snacks() {
-    const [productos, setProductos] = useState([]);
-    const [cargando, setCargando] = useState(true);
+  const [productos, setProductos] = useState([]);
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     fetch("http://localhost:4000/snacks", {
@@ -33,7 +33,7 @@ export default function Snacks() {
       <div className={styles.lista}>
         {productos.map((p) => (
           <div key={p.id_producto} className={styles.card}>
-            //agregar las fotos
+            <img src={`/${p.imagen}`} alt={p.nombre} />
             <h3>{p.nombre}</h3>
             <p>{p.descripcion}</p>
             <p className={styles.precio}>${p.precio}</p>
@@ -42,5 +42,4 @@ export default function Snacks() {
       </div>
     </main>
   );
-
 }
