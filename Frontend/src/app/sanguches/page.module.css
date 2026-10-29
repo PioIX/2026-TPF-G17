@@ -112,3 +112,120 @@
 .btnAgregar:hover {
   background-color: #ea580c;
 }
+
+
+
+.header {
+  background: linear-gradient(90deg, #f97316, #fb923c);
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.35);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 20px;
+}
+
+.tituloHeader {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.accionesHeader {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.badgeSaldo {
+  background-color: #ea580c;
+  padding: 0.4rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.btnCargarSaldo {
+  background-color: #16a34a;
+  color: #ffffff;
+  padding: 0.4rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.btnCargarSaldo:hover {
+  background-color: #15803d;
+  transform: translateY(-2px);
+}
+
+.btnCarrito {
+  background-color: #ffffff;
+  color: #ea580c;
+  padding: 0.4rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.btnCarrito:hover {
+  background-color: #ffedd5;
+  transform: translateY(-2px);
+}
+
+.btnLogout {
+  background-color: #dc2626;
+  color: #ffffff;
+  padding: 0.4rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.btnLogout:hover {
+  background-color: #b91c1c;
+  transform: translateY(-2px);
+}
+
+
+.btnAgregar {
+  width: 100%;
+  margin-top: 0.75rem;
+  background-color: #f97316;
+  color: #ffffff;
+  padding: 0.65rem 1rem;
+  border-radius: 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.35);
+  transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.btnAgregar:hover {
+  background-color: #ea580c;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.45);
+}
+
+.btnAgregar:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(249, 115, 22, 0.3);
+}
