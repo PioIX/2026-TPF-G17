@@ -9,6 +9,7 @@ export default function Home() {
   const [saldo, setSaldo] = useState(0);
   const [pedidos, setPedidos] = useState([]);
   const [cargandoPedidos, setCargandoPedidos] = useState(true);
+  const [esAdmin, setEsAdmin] = useState(false);
   const router = useRouter();
 
   async function cerrarSesion() {
@@ -30,19 +31,19 @@ export default function Home() {
     }
   }
 
-useEffect(function () {
-  fetch("http://localhost:4000/carrito", {
-    method: "GET",
-    credentials: "include"
-  })
-    .then(function (respuesta) { return respuesta.json(); })
-    .then(function (datos) {
-      if (datos.pedidos !== undefined) {
-        setPedidos(datos.pedidos);
-      }
-      setCargandoPedidos(false);
-    });
-}, []);
+  useEffect(function () {
+    fetch("http://localhost:4000/carrito", {
+      method: "GET",
+      credentials: "include"
+    })
+      .then(function (respuesta) { return respuesta.json(); })
+      .then(function (datos) {
+        if (datos.pedidos !== undefined) {
+          setPedidos(datos.pedidos);
+        }
+        setCargandoPedidos(false);
+      });
+  }, []);
 
   useEffect(function () {
     fetch("http://localhost:4000/saldo", {
@@ -56,6 +57,16 @@ useEffect(function () {
           setSaldo(datos.saldo);
         }
       });
+  }, []);
+
+  useEffect(function () {
+    fetch("http://localhost:4000/rol", {
+      method: "GET",
+      credentials: "include"
+    })
+      .then(function (respuesta) { return respuesta.json(); })
+      .then(function (datos) { setEsAdmin(datos.esAdmin === true); })
+      .catch(function () { setEsAdmin(false); });
   }, []);
 
   return (
@@ -79,63 +90,69 @@ useEffect(function () {
             Carrito
           </Link>
 
+          {esAdmin && (
+            <Link href="/admin" className={styles.btnAdmin}>
+              Administrador
+            </Link>
+          )}
+
           <button onClick={cerrarSesion} className={styles.btnLogout}>Cerrar sesión</button>
 
         </div>
       </header>
       <main className={styles.bloques}>
         <Link href="/sanguches" className={styles.bloque}>
-          <img src="/sanguchegenerico.png"/>
+          <img src="/sanguchegenerico.png" />
         </Link>
 
         <Link href="/hamburguesas" className={styles.bloque}>
-          <img src="/hamburguesagenerica.png"/>
+          <img src="/hamburguesagenerica.png" />
         </Link>
 
         <Link href="/bebidas" className={styles.bloque}>
-          <img src="/bebidagenerica.png"/>
+          <img src="/bebidagenerica.png" />
         </Link>
 
         <Link href="/snacks" className={styles.bloque}>
-          <img src="/snackgenerico.png"/>
+          <img src="/snackgenerico.png" />
         </Link>
       </main>
       <section className={styles.seccionPedidos}>
         <h2 className={styles.subtitulo}>Próximos pedidos</h2>
 
-  {cargandoPedidos ? (<p className={styles.cargando}>Cargando tus pedidos...</p>) : pedidos.length === 0 ? (
-    
-    <div className={styles.pedidosVacio}>No tenés pedidos en curso</div>) : (
-    
-    <div className={styles.listaPedidos}>
-      {pedidos.map((pedido) => (
-        <article key={pedido.id_pedido} className={styles.tarjetaPedido}>
-          <div className={styles.cabeceraPedido}>
-            <h3 className={styles.numeroPedido}>Pedido #{pedido.id_pedido}</h3>
-            <span className={`${styles.estadoPedido} ${claseEstado(pedido.estado)}`}>
-              {pedido.estado}
-            </span>
-          </div>
+        {cargandoPedidos ? (<p className={styles.cargando}>Cargando tus pedidos...</p>) : pedidos.length === 0 ? (
 
-          <ul className={styles.productosPedido}>
-            {pedido.productos.map((producto, i) => (
-              <li key={i} className={styles.itemPedido}>
-                {producto.cantidad}× {producto.nombre}
-              </li>
+          <div className={styles.pedidosVacio}>No tenés pedidos en curso</div>) : (
+
+          <div className={styles.listaPedidos}>
+            {pedidos.map((pedido) => (
+              <article key={pedido.id_pedido} className={styles.tarjetaPedido}>
+                <div className={styles.cabeceraPedido}>
+                  <h3 className={styles.numeroPedido}>Pedido #{pedido.id_pedido}</h3>
+                  <span className={`${styles.estadoPedido} ${claseEstado(pedido.estado)}`}>
+                    {pedido.estado}
+                  </span>
+                </div>
+
+                <ul className={styles.productosPedido}>
+                  {pedido.productos.map((producto, i) => (
+                    <li key={i} className={styles.itemPedido}>
+                      {producto.cantidad}× {producto.nombre}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className={styles.piePedido}>
+                  <span className={styles.horarioRetiro}>
+                    Retirar a las <strong>{String(pedido.horario).slice(0, 5)}</strong>
+                  </span>
+                  <span className={styles.totalPedido}>${pedido.total}</span>
+                </div>
+              </article>
             ))}
-          </ul>
-
-          <div className={styles.piePedido}>
-            <span className={styles.horarioRetiro}>
-              Retirar a las <strong>{String(pedido.horario).slice(0, 5)}</strong>
-            </span>
-            <span className={styles.totalPedido}>${pedido.total}</span>
           </div>
-        </article>
-      ))}
-    </div>
-  )}
-</section>
+        )}
+      </section>
     </div>
   );
 }

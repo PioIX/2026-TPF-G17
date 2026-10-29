@@ -433,3 +433,23 @@ app.post("/agregar-carrito", async function (req, res) {
     res.status(500).send({ res: "Error del servidor" });
   }
 });
+
+app.get("/rol", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ esAdmin: false });
+    }
+
+    const resultado = await realizarQuery(
+      "SELECT es_admin FROM Clientes WHERE mail = ?",
+      [req.session.user]
+    );
+
+    res.send({
+      esAdmin: resultado.length > 0 && Boolean(resultado[0].es_admin)
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ esAdmin: false });
+  }
+});

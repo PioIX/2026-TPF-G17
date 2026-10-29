@@ -365,3 +365,18 @@
 .btnLogout:hover {
   background-color: #b91c1c;
 }
+
+
+.btnAdmin {
+  background-color: #1f2937;
+  color: #ffffff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.btnAdmin:hover {
+  background-color: #111827;
+}
