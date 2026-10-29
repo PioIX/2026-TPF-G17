@@ -9,20 +9,37 @@ export default function Carrito() {
   const [total, setTotal] = useState(0);
 
   function cargarCarrito() {
-  fetch("http://localhost:4000/carrito", { credentials: "include" })
-    .then(function (respuesta) { return respuesta.json(); })
-    .then(function (datos) {
-      if (datos.productos !== undefined) {
-        setProductos(datos.productos);
-        setTotal(datos.total);
-      }
-    });
-}
+    fetch("http://localhost:4000/carrito", { credentials: "include" })
+      .then(function (respuesta) { return respuesta.json(); })
+      .then(function (datos) {
+        if (datos.productos !== undefined) {
+          setProductos(datos.productos);
+          setTotal(datos.total);
+        }
+      });
+  }
 
-useEffect(function () {
-  cargarCarrito();
-}, []);
+  useEffect(function () {
+    cargarCarrito();
+  }, []);
 
+  function confirmar() {
+    fetch("http://localhost:4000/confirmar-pedido", {
+      method: "POST",
+      credentials: "include",
+    })
+      .then(function (respuesta) {
+        return respuesta.json().then(function (datos) {
+          alert(datos.res);
+          if (respuesta.ok) {
+            cargarCarrito();
+          }
+        });
+      })
+      .catch(function () {
+        alert("No se pudo conectar con el servidor");
+      });
+  }
 
   function eliminar(id_producto) {
     fetch("http://localhost:4000/quitar-carrito/" + id_producto, {
@@ -64,7 +81,7 @@ useEffect(function () {
 
             <div className={styles.resumen}>
               <span className={styles.totalTexto}>Total: ${total}</span>
-              <button className={styles.btnConfirmar}>Confirmar pedido</button>
+              <button className={styles.btnConfirmar} onClick={confirmar}>Confirmar pedido</button>
             </div>
           </div>
         )}

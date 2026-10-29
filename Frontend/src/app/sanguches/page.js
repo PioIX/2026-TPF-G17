@@ -6,6 +6,7 @@ import styles from "./page.module.css";
 export default function Sanguches() {
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [saldo, setSaldo] = useState(0);
 
   useEffect(() => {
     fetch("http://localhost:4000/sanguches", {
@@ -22,6 +23,14 @@ export default function Sanguches() {
       });
   }, []);
 
+  useEffect(() => {
+    fetch("http://localhost:4000/saldo", { credentials: "include" })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.saldo !== undefined) setSaldo(data.saldo);
+      });
+  }, []);
+
   function agregar(id_producto) {
     fetch("http://localhost:4000/agregar-carrito", {
       method: "POST",
@@ -33,12 +42,31 @@ export default function Sanguches() {
       .then((data) => alert(data.res))
       .catch(() => alert("No se pudo conectar con el servidor"));
   }
+
+  
   return (
     <main className={styles.main}>
-      <Link href="/home" className={styles.volver}>
-        ← Volver
-      </Link>
-      <h1 className={styles.titulo}>Sanguches</h1>
+      <header className={styles.header}>
+        <h1 className={styles.tituloHeader}>Sanguches</h1>
+
+        <div className={styles.accionesHeader}>
+          <div className={styles.badgeSaldo}>Saldo: ${Number(saldo)}</div>
+
+          <Link href="/cargarSaldo" className={styles.btnCargarSaldo}>
+            + Cargar Saldo
+          </Link>
+
+          <Link href="/carrito" className={styles.btnCarrito}>
+            Carrito
+          </Link>
+
+          <Link href="/home" className={styles.volver}>
+            ← Volver
+          </Link>
+        </div>
+      </header>
+
+ 
 
       {cargando && <p>Cargando...</p>}
       {!cargando && productos.length === 0 && (
@@ -48,7 +76,7 @@ export default function Sanguches() {
       <div className={styles.lista}>
         {productos.map((p) => (
           <div key={p.id_producto} className={styles.card}>
-            <img src={`/${p.imagen}`} alt={p.nombre} />
+            <img src={`/${p.imagen}`} alt={p.nombre} className={styles.imagen} />
             <h3>{p.nombre}</h3>
             <p>{p.descripcion}</p>
             <p className={styles.precio}>${p.precio}</p>
