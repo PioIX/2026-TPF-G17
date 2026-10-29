@@ -248,9 +248,11 @@ app.get("/carrito", async function (req, res) {
       return res.send({ productos: [], total: 0 });
     }
 
+    const marcas = ids.map(() => "?").join(",");
+
     const resultado = await realizarQuery(
-      "SELECT id_producto, nombre, precio, stock, descripcion, imagen FROM Productos WHERE id_producto IN (?)",
-      [ids]
+      "SELECT id_producto, nombre, precio, stock, descripcion, imagen FROM Productos WHERE id_producto IN (" + marcas + ")",
+      ids
     );
 
     const productos = resultado.map((p) => ({
@@ -293,6 +295,64 @@ app.get("/sanguches", async function (req, res) {
     );
 
     res.send(productos);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+app.post("/confirmar-pedido", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const carrito = req.session.carrito || {};
+    const ids = Object.keys(carrito);
+
+    if (ids.length === 0) {
+      return res.status(400).send({ res: "El carrito está vacío" });
+    }
+
+    const cliente = await realizarQuery(
+      "SELECT id_cliente, saldo FROM Clientes WHERE mail = ?",
+      [req.session.user]
+    );
+
+    let total = 0;
+    for (const id of ids) {
+      const producto = await realizarQuery(
+        "SELECT precio FROM Productos WHERE id_producto = ?",
+        [id]
+      );
+      total += producto[0].precio * carrito[id];
+    }
+
+    if (Number(cliente[0].saldo) < total) {
+      return res.status(400).send({ res: "Saldo insuficiente" });
+    }
+
+
+    const pedido = await realizarQuery(
+      "INSERT INTO Pedidos (id_cliente, horario, total, estado) VALUES (?, CURTIME(), ?, 'En Preparacion')",
+      [cliente[0].id_cliente, total]
+    );
+
+    for (const id of ids) {
+      await realizarQuery(
+        "INSERT INTO DetallePedido (id_pedido, id_producto, cantidad) VALUES (?, ?, ?)",
+        [pedido.insertId, id, carrito[id]]
+      );
+    }
+
+    await realizarQuery(
+      "UPDATE Clientes SET saldo = saldo - ? WHERE id_cliente = ?",
+      [total, cliente[0].id_cliente]
+    );
+
+    req.session.carrito = {};
+
+    res.send({ res: "¡Pedido confirmado!" });
   } catch (error) {
     console.error(error);
     res.status(500).send({ res: "Error del servidor" });
