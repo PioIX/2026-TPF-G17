@@ -101,3 +101,5 @@ INSERT INTO Productos (nombre, categoria, precio, stock, descripcion, imagen) VA
 INSERT INTO Alerta(id_cliente, id_pedido, mensaje) VALUES
     (1, 1, 'Tu pedido esta listo'),
     (2, 2, 'Tu pedido esta en preparacion');
+
+UPDATE Pedidos SET estado = 'Entregado' WHERE estado IN ('En Preparacion', 'Listo') AND id_pedido > 0;

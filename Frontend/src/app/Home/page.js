@@ -4,12 +4,15 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
+import { io } from "socket.io-client";
 
 export default function Home() {
   const [saldo, setSaldo] = useState(0);
   const [pedidos, setPedidos] = useState([]);
   const [cargandoPedidos, setCargandoPedidos] = useState(true);
   const [esAdmin, setEsAdmin] = useState(false);
+  const [productosPedidos, setProductosPedidos] = useState([]);
+  const [alertas, setAlertas] = useState([]);
   const router = useRouter();
 
   async function cerrarSesion() {
@@ -31,8 +34,8 @@ export default function Home() {
     }
   }
 
-  useEffect(function () {
-    fetch("http://localhost:4000/carrito", {
+  function cargarPedidos() {
+    fetch("http://localhost:4000/mis-pedidos", {
       method: "GET",
       credentials: "include"
     })
@@ -40,9 +43,42 @@ export default function Home() {
       .then(function (datos) {
         if (datos.pedidos !== undefined) {
           setPedidos(datos.pedidos);
+          setProductosPedidos(datos.productos);
         }
         setCargandoPedidos(false);
       });
+  }
+  function descartarAlerta(id_alerta) {
+  fetch("http://localhost:4000/alertas/" + id_alerta, {
+    method: "DELETE",
+    credentials: "include"
+  }).then(function () {
+    setAlertas(function (anteriores) {
+      return anteriores.filter(function (a) { return a.id_alerta !== id_alerta; });
+    });
+    cargarPedidos();
+  });
+}
+
+  function claseEstado(estado) {
+    if (estado === "Listo") return styles.estadoListo;
+    if (estado === "En Preparacion") return styles.estadoPreparacion;
+    return styles.estadoPendiente;
+  }
+
+  function descartarAlerta(id_alerta) {
+    fetch("http://localhost:4000/alertas/" + id_alerta, {
+      method: "DELETE",
+      credentials: "include"
+    }).then(function () {
+      setAlertas(function (anteriores) {
+        return anteriores.filter(function (a) { return a.id_alerta !== id_alerta; });
+      });
+    });
+  }
+
+  useEffect(function () {
+    cargarPedidos();
   }, []);
 
   useEffect(function () {
@@ -67,6 +103,28 @@ export default function Home() {
       .then(function (respuesta) { return respuesta.json(); })
       .then(function (datos) { setEsAdmin(datos.esAdmin === true); })
       .catch(function () { setEsAdmin(false); });
+  }, []);
+
+  useEffect(function () {
+    fetch("http://localhost:4000/alertas", {
+      method: "GET",
+      credentials: "include"
+    })
+      .then(function (respuesta) { return respuesta.json(); })
+      .then(function (datos) {
+        if (Array.isArray(datos)) {
+          setAlertas(datos);
+        }
+      });
+
+    const socket = io("http://localhost:4000", { withCredentials: true });
+
+    socket.on("pedidoListo", function (alerta) {
+      setAlertas(function (anteriores) { return [...anteriores, alerta]; });
+      cargarPedidos();
+    });
+
+    return function () { socket.disconnect(); };
   }, []);
 
   return (
@@ -100,6 +158,23 @@ export default function Home() {
 
         </div>
       </header>
+
+      <div className={styles.contenidoPrincipal}>
+        {alertas.map(function (a) {
+          return (
+            <div key={a.id_alerta} className={styles.alertaPedido}>
+              <span>{a.mensaje}</span>
+              <button
+                className={styles.btnEntendido}
+                onClick={function () { descartarAlerta(a.id_alerta); }}
+              >
+                Entendido
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
       <main className={styles.bloques}>
         <Link href="/sanguches" className={styles.bloque}>
           <img src="/sanguchegenerico.png" />
@@ -135,11 +210,15 @@ export default function Home() {
                 </div>
 
                 <ul className={styles.productosPedido}>
-                  {pedido.productos.map((producto, i) => (
-                    <li key={i} className={styles.itemPedido}>
-                      {producto.cantidad}× {producto.nombre}
-                    </li>
-                  ))}
+                  {productosPedidos
+                    .filter(function (producto) { return producto.id_pedido === pedido.id_pedido; })
+                    .map(function (producto, i) {
+                      return (
+                        <li key={i} className={styles.itemPedido}>
+                          {producto.cantidad}× {producto.nombre}
+                        </li>
+                      );
+                    })}
                 </ul>
 
                 <div className={styles.piePedido}>
