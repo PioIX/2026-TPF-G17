@@ -11,6 +11,13 @@ const { realizarQuery } = require("./modulos/mysql");
 const app = express();
 const PORT = process.env.PORT || 4000;
 const ORIGENES = ["http://localhost:3000", "http://localhost:3001"];
+const TIEMPOS = {
+  Hamburguesas: 15,
+  Sanguches: 10,
+  Snacks: 3,
+  Bebidas: 4,
+};
+const SEGUNDOS_RETIRO = 20;
 
 app.use(cors({ origin: ORIGENES, credentials: true }));
 app.use(express.json());
@@ -42,6 +49,9 @@ let contador = 0;
 
 io.on("connection", (socket) => {
   const req = socket.request;
+  if (req.session.user) {
+    socket.join("cliente_" + req.session.user);
+  }
 
   socket.on("joinRoom", (data) => {
     if (req.session.room != undefined && req.session.room.length > 0) {
@@ -300,7 +310,6 @@ app.get("/sanguches", async function (req, res) {
     res.status(500).send({ res: "Error del servidor" });
   }
 });
-
 app.post("/confirmar-pedido", async function (req, res) {
   try {
     if (!req.session.user) {
@@ -319,31 +328,45 @@ app.post("/confirmar-pedido", async function (req, res) {
       [req.session.user]
     );
 
-    let total = 0;
-    for (const id of ids) {
-      const producto = await realizarQuery(
-        "SELECT precio FROM Productos WHERE id_producto = ?",
-        [id]
-      );
-      total += producto[0].precio * carrito[id];
+    const marcas = ids.map(() => "?").join(",");
+
+    const productos = await realizarQuery(
+      "SELECT id_producto, precio, categoria FROM Productos WHERE id_producto IN (" + marcas + ")",
+      ids
+    );
+
+    if (productos.length === 0) {
+      return res.status(400).send({ res: "El carrito está vacío" });
     }
+
+    let total = 0;
+    let segundos = 0;
+
+    productos.forEach(function (p) {
+      total += p.precio * carrito[p.id_producto];
+
+      const tiempo = TIEMPOS[p.categoria] || 5;
+      if (tiempo > segundos) {
+        segundos = tiempo;
+      }
+    });
 
     if (Number(cliente[0].saldo) < total) {
       return res.status(400).send({ res: "Saldo insuficiente" });
     }
-
 
     const pedido = await realizarQuery(
       "INSERT INTO Pedidos (id_cliente, horario, total, estado) VALUES (?, CURTIME(), ?, 'En Preparacion')",
       [cliente[0].id_cliente, total]
     );
 
-    for (const id of ids) {
-      await realizarQuery(
-        "INSERT INTO DetallePedido (id_pedido, id_producto, cantidad) VALUES (?, ?, ?)",
-        [pedido.insertId, id, carrito[id]]
-      );
-    }
+    const filas = productos
+      .map((p) => "(" + pedido.insertId + ", " + p.id_producto + ", " + carrito[p.id_producto] + ")")
+      .join(",");
+
+    await realizarQuery(
+      "INSERT INTO DetallePedido (id_pedido, id_producto, cantidad) VALUES " + filas
+    );
 
     await realizarQuery(
       "UPDATE Clientes SET saldo = saldo - ? WHERE id_cliente = ?",
@@ -352,13 +375,36 @@ app.post("/confirmar-pedido", async function (req, res) {
 
     req.session.carrito = {};
 
+    const id_pedido = pedido.insertId;
+    const id_cliente = cliente[0].id_cliente;
+    const mail = req.session.user;
+
+    setTimeout(async function () {
+  try {
+    await realizarQuery(
+      "UPDATE Pedidos SET estado = 'Entregado' WHERE id_pedido = ?",
+      [id_pedido]
+    );
+
+    await realizarQuery(
+      "DELETE FROM Alerta WHERE id_pedido = ?",
+      [id_pedido]
+    );
+
+    io.to("cliente_" + mail).emit("pedidoEntregado", {
+      id_pedido: id_pedido,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}, SEGUNDOS_RETIRO * 1000);
+
     res.send({ res: "¡Pedido confirmado!" });
   } catch (error) {
     console.error(error);
     res.status(500).send({ res: "Error del servidor" });
   }
 });
-
 app.get("/hamburguesas", async function (req, res) {
   try {
     const productos = await realizarQuery(
@@ -453,3 +499,89 @@ app.get("/rol", async function (req, res) {
     res.status(500).send({ esAdmin: false });
   }
 });
+app.get("/mis-pedidos", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const cliente = await realizarQuery(
+      "SELECT id_cliente FROM Clientes WHERE mail = ?",
+      [req.session.user]
+    );
+
+    const pedidos = await realizarQuery(
+      "SELECT id_pedido, horario, total, estado FROM Pedidos WHERE id_cliente = ? AND estado IN ('En Preparacion', 'Listo')",
+      [cliente[0].id_cliente]
+    );
+
+    const productos = await realizarQuery(
+      "SELECT DetallePedido.id_pedido, cantidad, nombre FROM DetallePedido JOIN Productos ON DetallePedido.id_producto = Productos.id_producto JOIN Pedidos ON DetallePedido.id_pedido = Pedidos.id_pedido WHERE id_cliente = ?",
+      [cliente[0].id_cliente]
+    );
+
+    res.send({ pedidos, productos });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+app.delete("/alertas/:id_alerta", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const cliente = await realizarQuery(
+      "SELECT id_cliente FROM Clientes WHERE mail = ?",
+      [req.session.user]
+    );
+
+    const alerta = await realizarQuery(
+      "SELECT id_pedido FROM Alerta WHERE id_alerta = ? AND id_cliente = ?",
+      [req.params.id_alerta, cliente[0].id_cliente]
+    );
+
+    if (alerta.length > 0) {
+      await realizarQuery(
+        "UPDATE Pedidos SET estado = 'Entregado' WHERE id_pedido = ?",
+        [alerta[0].id_pedido]
+      );
+    }
+
+    await realizarQuery(
+      "DELETE FROM Alerta WHERE id_alerta = ? AND id_cliente = ?",
+      [req.params.id_alerta, cliente[0].id_cliente]
+    );
+
+    res.send({ res: "Alerta descartada" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+app.get("/alertas", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const cliente = await realizarQuery(
+      "SELECT id_cliente FROM Clientes WHERE mail = ?",
+      [req.session.user]
+    );
+
+    const alertas = await realizarQuery(
+      "SELECT id_alerta, id_pedido, mensaje FROM Alerta WHERE id_cliente = ?",
+      [cliente[0].id_cliente]
+    );
+
+    res.send(alertas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
