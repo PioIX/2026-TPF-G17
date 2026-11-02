@@ -48,6 +48,7 @@ export default function Home() {
         setCargandoPedidos(false);
       });
   }
+  
   function descartarAlerta(id_alerta) {
   fetch("http://localhost:4000/alertas/" + id_alerta, {
     method: "DELETE",

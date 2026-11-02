@@ -126,21 +126,30 @@
 }
 
 
-@media (max-width: 520px) {
-  .itemCarrito {
-    flex-wrap: wrap;
-  }
-
-  .resumen {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-  }
-}
-
 .btnEliminar {
   background: none;
   border: none;
   font-size: 1.25rem;
   cursor: pointer;
+}
+.controlesCantidad {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btnCantidad {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+  background-color: #f97316;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.btnCantidad:hover {
+  background-color: #ea580c;
 }

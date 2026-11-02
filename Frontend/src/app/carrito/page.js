@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,7 +10,9 @@ export default function Carrito() {
   const [total, setTotal] = useState(0);
 
   function cargarCarrito() {
-    fetch("http://localhost:4000/carrito", { credentials: "include" })
+    fetch("http://localhost:4000/carrito", {
+      credentials: "include"
+    })
       .then(function (respuesta) { return respuesta.json(); })
       .then(function (datos) {
         if (datos.productos !== undefined) {
@@ -22,6 +25,36 @@ export default function Carrito() {
   useEffect(function () {
     cargarCarrito();
   }, []);
+
+  function cambiarCantidad(producto, cambio) {
+    const nuevaCantidad = producto.cantidad + cambio;
+
+    if (nuevaCantidad <= 0) {
+      eliminar(producto.id_producto);
+      return;
+    }
+
+    fetch("http://localhost:4000/actualizar-cantidad", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        id_producto: producto.id_producto,
+        cantidad: nuevaCantidad
+      })
+    })
+      .then(function (respuesta) {
+        return respuesta.json();
+      })
+      .then(function () {
+        cargarCarrito();
+      })
+      .catch(function () {
+        alert("No se pudo actualizar la cantidad");
+      });
+  }
 
   function confirmar() {
     fetch("http://localhost:4000/confirmar-pedido", {
@@ -46,15 +79,21 @@ export default function Carrito() {
       method: "DELETE",
       credentials: "include"
     })
-      .then(function (respuesta) { return respuesta.json(); })
-      .then(function () { cargarCarrito(); });
+      .then(function (respuesta) {
+        return respuesta.json();
+      })
+      .then(function () {
+        cargarCarrito();
+      });
   }
 
   return (
     <div className={styles.contenedorPrincipal}>
       <header className={styles.header}>
         <h1 className={styles.tituloHeader}>Tu carrito</h1>
-        <Link href="/home" className={styles.btnVolver}>Volver al menú</Link>
+        <Link href="/home" className={styles.btnVolver}>
+          Volver al menú
+        </Link>
       </header>
 
       <main className={styles.contenidoPrincipal}>
@@ -65,23 +104,67 @@ export default function Carrito() {
             {productos.map(function (producto) {
               return (
                 <div key={producto.id_producto} className={styles.itemCarrito}>
-                  <img src={producto.imagen} alt={producto.nombre} className={styles.imagenItem} />
+                  <img
+                    src={producto.imagen}
+                    alt={producto.nombre}
+                    className={styles.imagenItem}
+                  />
+
                   <div className={styles.infoItem}>
-                    <h3 className={styles.nombreItem}>{producto.nombre}</h3>
-                    <p className={styles.cantidadItem}>Cantidad: {producto.cantidad}</p>
+                    <h3 className={styles.nombreItem}>
+                      {producto.nombre}
+                    </h3>
+
+                    <div className={styles.controlesCantidad}>
+                      <button
+                        className={styles.btnCantidad}
+                        onClick={function () {
+                          cambiarCantidad(producto, -1);
+                        }}
+                      >
+                        −
+                      </button>
+
+                      <span>{producto.cantidad}</span>
+
+                      <button
+                        className={styles.btnCantidad}
+                        onClick={function () {
+                          cambiarCantidad(producto, 1);
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
-                  <span className={styles.precioItem}>${producto.precio * producto.cantidad}</span>
+
+                  <span className={styles.precioItem}>
+                    ${producto.precio * producto.cantidad}
+                  </span>
+
                   <button
                     className={styles.btnEliminar}
-                    onClick={function () { eliminar(producto.id_producto); }}
-                  >🗑</button>
+                    onClick={function () {
+                      eliminar(producto.id_producto);
+                    }}
+                  >
+                    🗑
+                  </button>
                 </div>
               );
             })}
 
             <div className={styles.resumen}>
-              <span className={styles.totalTexto}>Total: ${total}</span>
-              <button className={styles.btnConfirmar} onClick={confirmar}>Confirmar pedido</button>
+              <span className={styles.totalTexto}>
+                Total: ${total}
+              </span>
+
+              <button
+                className={styles.btnConfirmar}
+                onClick={confirmar}
+              >
+                Confirmar pedido
+              </button>
             </div>
           </div>
         )}

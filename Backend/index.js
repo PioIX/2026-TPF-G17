@@ -380,25 +380,52 @@ app.post("/confirmar-pedido", async function (req, res) {
     const mail = req.session.user;
 
     setTimeout(async function () {
-  try {
-    await realizarQuery(
-      "UPDATE Pedidos SET estado = 'Entregado' WHERE id_pedido = ?",
-      [id_pedido]
-    );
+      try {
+        await realizarQuery(
+          "UPDATE Pedidos SET estado = 'Listo' WHERE id_pedido = ?",
+          [id_pedido]
+        );
 
-    await realizarQuery(
-      "DELETE FROM Alerta WHERE id_pedido = ?",
-      [id_pedido]
-    );
+        const mensaje = "Tu pedido #" + id_pedido + " está listo";
 
-    io.to("cliente_" + mail).emit("pedidoEntregado", {
-      id_pedido: id_pedido,
-    });
-  } catch (error) {
-    console.error(error);
-  }
-}, SEGUNDOS_RETIRO * 1000);
+        const alerta = await realizarQuery(
+          "INSERT INTO Alerta (id_cliente, id_pedido, mensaje) VALUES (?, ?, ?)",
+          [id_cliente, id_pedido, mensaje]
+        );
 
+        io.to("cliente_" + mail).emit("pedidoListo", {
+          id_alerta: alerta.insertId,
+          id_pedido: id_pedido,
+          mensaje: mensaje,
+        });
+
+        console.log("Pedido " + id_pedido + " listo");
+      } catch (error) {
+        console.error(error);
+      }
+    }, segundos * 1000);
+
+    setTimeout(async function () {
+      try {
+        await realizarQuery(
+          "UPDATE Pedidos SET estado = 'Entregado' WHERE id_pedido = ?",
+          [id_pedido]
+        );
+
+        await realizarQuery(
+          "DELETE FROM Alerta WHERE id_pedido = ?",
+          [id_pedido]
+        );
+
+        io.to("cliente_" + mail).emit("pedidoEntregado", {
+          id_pedido: id_pedido,
+        });
+
+        console.log("Pedido " + id_pedido + " entregado");
+      } catch (error) {
+        console.error(error);
+      }
+    }, (segundos + SEGUNDOS_RETIRO) * 1000);
     res.send({ res: "¡Pedido confirmado!" });
   } catch (error) {
     console.error(error);
@@ -584,4 +611,45 @@ app.get("/alertas", async function (req, res) {
     res.status(500).send({ res: "Error del servidor" });
   }
 });
+
+
+app.post("/actualizar-cantidad", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const { id_producto, cantidad } = req.body;
+
+    if (!Number.isInteger(cantidad) || cantidad < 1) {
+      return res.status(400).send({ res: "Cantidad inválida" });
+    }
+
+    const resultado = await realizarQuery(
+      "SELECT stock FROM Productos WHERE id_producto = ?",
+      [id_producto]
+    );
+
+    if (resultado.length === 0) {
+      return res.status(404).send({ res: "El producto no existe" });
+    }
+
+    if (!req.session.carrito) {
+      req.session.carrito = {};
+    }
+
+    if (cantidad > resultado[0].stock) {
+      return res.status(400).send({ res: "No hay suficiente stock disponible" });
+    }
+
+    req.session.carrito[id_producto] = cantidad;
+
+    res.send({ res: "Cantidad actualizada correctamente" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
 
