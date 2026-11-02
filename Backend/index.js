@@ -12,10 +12,10 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 const ORIGENES = ["http://localhost:3000", "http://localhost:3001"];
 const TIEMPOS = {
-  Hamburguesas: 15,
-  Sanguches: 10,
-  Snacks: 3,
-  Bebidas: 4,
+  Hamburguesas: 5,
+  Sanguches: 4,
+  Snacks: 2,
+  Bebidas: 1,
 };
 const SEGUNDOS_RETIRO = 20;
 
@@ -653,3 +653,56 @@ app.post("/actualizar-cantidad", async function (req, res) {
 });
 
 
+app.get("/productos-admin", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const resultado = await realizarQuery(
+      "SELECT * FROM Productos"
+    );
+
+    res.send({ productos: resultado });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+app.post("/modificar-stock", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const { id_producto, cantidad } = req.body;
+
+    const resultado = await realizarQuery(
+      "SELECT stock FROM Productos WHERE id_producto = ?",
+      [id_producto]
+    );
+
+    if (resultado.length === 0) {
+      return res.status(404).send({ res: "El producto no existe" });
+    }
+
+    const nuevoStock = resultado[0].stock + cantidad;
+
+    if (nuevoStock < 0) {
+      return res.status(400).send({ res: "No hay suficiente stock" });
+    }
+
+    await realizarQuery(
+      "UPDATE Productos SET stock = ? WHERE id_producto = ?",
+      [nuevoStock, id_producto]
+    );
+
+    res.send({ res: "Stock actualizado correctamente" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
