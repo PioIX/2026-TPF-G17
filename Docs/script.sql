@@ -81,22 +81,22 @@ INSERT INTO Saldo (id_cliente, metodo_pago, cantidad_saldo) VALUES
     (2, 'Efectivo', 100);
     
 INSERT INTO Productos (nombre, categoria, precio, stock, descripcion, imagen) VALUES
-    ('Sánguche Queso', 'Sanguches', 5000, 20, 'Queso', 'sanguchequeso.png'),
-    ('Sánguche Jamón y Queso', 'Sanguches', 5000, 20, 'Jamon y Queso', 'sanguchejamonyqueso.png'),
-    ('Sánguche Salame y Queso', 'Sanguches', 5000, 20, 'Salame y Queso', 'sanguchesalameyqueso.png'),
-    ('Sánguche Lechuga y Tomate', 'Sanguches', 5000, 20, 'Lechuga y Tomate', 'sanguchelechugaytomate.png'),
-    ('Hamburguesa Carne', 'Hamburguesas', 10000, 20, 'Carne', 'hamburguesacarne.png'),
-    ('Hamburguesa Queso', 'Hamburguesas', 10000, 20, 'Carne, queso', 'hamburguesaqueso.png'),
-    ('Hamburguesa Completa', 'Hamburguesas', 10000, 20, 'Carne, queso, huevo, panceta', 'hamburguesaquesohuevopanceta.png'),
-    ('Hamburguesa Especial', 'Hamburguesas', 10000, 20, 'Carne, queso, lechuga, tomate', 'hamburguesaquesolechugatomate.png'),
-    ('Bolsa Papas Fritas', 'Snacks', 3000, 30, 'Papas Lays', 'bolsapapasfritas.png'),
-    ('Bolsa Doritos', 'Snacks', 3000, 30, 'Doritos', 'bolsadoritos.png'),
-    ('Bolsa Cheetos', 'Snacks', 3000, 30, 'Cheetos', 'bolsachetos.png'),
-    ('Bolsa Takis', 'Snacks', 3000, 30, 'Takis', 'bolsatakis.png'),
-    ('Coca Cola', 'Bebidas', 2000, 30, 'Coca Cola', 'cocacola.png'),
-    ('Sprite', 'Bebidas', 2000, 30, 'Sprite', 'sprite.png'),
-    ('Fanta', 'Bebidas', 2000, 30, 'Fanta', 'fanta.png'),
-    ('Agua Mineral', 'Bebidas', 2000, 30, 'Agua', 'agua.png');
+    ('Sánguche Queso', 'Sanguches', 5000, 50, 'Queso', 'sanguchequeso.png'),
+    ('Sánguche Jamón y Queso', 'Sanguches', 6000, 50, 'Jamon y Queso', 'sanguchejamonyqueso.png'),
+    ('Sánguche Salame y Queso', 'Sanguches', 6500, 50, 'Salame y Queso', 'sanguchesalameyqueso.png'),
+    ('Sánguche Lechuga y Tomate', 'Sanguches', 5500, 50, 'Lechuga y Tomate', 'sanguchelechugaytomate.png'),
+    ('Hamburguesa Carne', 'Hamburguesas', 7500, 50, 'Carne', 'hamburguesacarne.png'),
+    ('Hamburguesa Queso', 'Hamburguesas', 8500, 50, 'Carne, queso', 'hamburguesaqueso.png'),
+    ('Hamburguesa Completa', 'Hamburguesas', 12500, 50, 'Carne, queso, huevo, panceta', 'hamburguesaquesohuevopanceta.png'),
+    ('Hamburguesa Especial', 'Hamburguesas', 10500, 50, 'Carne, queso, lechuga, tomate', 'hamburguesaquesolechugatomate.png'),
+    ('Bolsa Papas Fritas', 'Snacks', 3500, 50, 'Papas Lays', 'bolsapapasfritas.png'),
+    ('Bolsa Doritos', 'Snacks', 3500, 50, 'Doritos', 'bolsadoritos.png'),
+    ('Bolsa Cheetos', 'Snacks', 3800, 50, 'Cheetos', 'bolsachetos.png'),
+    ('Bolsa Takis', 'Snacks', 4800, 50, 'Takis', 'bolsatakis.png'),
+    ('Coca Cola', 'Bebidas', 2800, 50, 'Coca Cola', 'cocacola.png'),
+    ('Sprite', 'Bebidas', 2800, 50, 'Sprite', 'sprite.png'),
+    ('Fanta', 'Bebidas', 2800, 50, 'Fanta', 'fanta.png'),
+    ('Agua Mineral', 'Bebidas', 2200, 50, 'Agua', 'agua.png');
 
 INSERT INTO Alerta(id_cliente, id_pedido, mensaje) VALUES
     (1, 1, 'Tu pedido esta listo'),
