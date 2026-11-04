@@ -355,6 +355,19 @@ app.post("/confirmar-pedido", async function (req, res) {
       return res.status(400).send({ res: "Saldo insuficiente" });
     }
 
+    const stocks = await realizarQuery(
+      "SELECT id_producto, nombre, stock FROM Productos WHERE id_producto IN (" + marcas + ")",
+      ids
+    );
+
+    for (const p of stocks) {
+      if (carrito[p.id_producto] > p.stock) {
+        return res.status(400).send({
+          res: "No hay stock suficiente de " + p.nombre,
+        });
+      }
+    }
+
     const pedido = await realizarQuery(
       "INSERT INTO Pedidos (id_cliente, horario, total, estado) VALUES (?, CURTIME(), ?, 'En Preparacion')",
       [cliente[0].id_cliente, total]
@@ -367,6 +380,13 @@ app.post("/confirmar-pedido", async function (req, res) {
     await realizarQuery(
       "INSERT INTO DetallePedido (id_pedido, id_producto, cantidad) VALUES " + filas
     );
+
+    for (const p of productos) {
+      await realizarQuery(
+        "UPDATE Productos SET stock = stock - ? WHERE id_producto = ? AND stock >= ?",
+        [carrito[p.id_producto], p.id_producto, carrito[p.id_producto]]
+      );
+    }
 
     await realizarQuery(
       "UPDATE Clientes SET saldo = saldo - ? WHERE id_cliente = ?",
