@@ -93,10 +93,10 @@ INSERT INTO Productos (nombre, categoria, precio, stock, descripcion, imagen) VA
     ('Bolsa Doritos', 'Snacks', 3500, 50, 'Doritos', 'bolsadoritos.png'),
     ('Bolsa Cheetos', 'Snacks', 3800, 50, 'Cheetos', 'bolsachetos.png'),
     ('Bolsa Takis', 'Snacks', 4800, 50, 'Takis', 'bolsatakis.png'),
+    ('Agua Mineral', 'Bebidas', 2200, 50, 'Agua', 'agua.png'),
     ('Coca Cola', 'Bebidas', 2800, 50, 'Coca Cola', 'cocacola.png'),
     ('Sprite', 'Bebidas', 2800, 50, 'Sprite', 'sprite.png'),
-    ('Fanta', 'Bebidas', 2800, 50, 'Fanta', 'fanta.png'),
-    ('Agua Mineral', 'Bebidas', 2200, 50, 'Agua', 'agua.png');
+    ('Fanta', 'Bebidas', 2800, 50, 'Fanta', 'fanta.png');
 
 INSERT INTO Alerta(id_cliente, id_pedido, mensaje) VALUES
     (1, 1, 'Tu pedido esta listo'),
