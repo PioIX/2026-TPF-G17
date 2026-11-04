@@ -12,10 +12,10 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 const ORIGENES = ["http://localhost:3000", "http://localhost:3001"];
 const TIEMPOS = {
-  Hamburguesas: 5,
-  Sanguches: 4,
-  Snacks: 2,
-  Bebidas: 1,
+  Hamburguesas: 15,
+  Sanguches: 10,
+  Snacks: 10,
+  Bebidas: 10,
 };
 const SEGUNDOS_RETIRO = 20;
 

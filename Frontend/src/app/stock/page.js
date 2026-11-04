@@ -41,7 +41,7 @@ export default function Stock() {
     })
       .then(function (respuesta) {
         return respuesta.json().then(function (datos) {
-          alert(datos.res);
+          // alert(datos.res);
 
           if (respuesta.ok) {
             cargarProductos();
