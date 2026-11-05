@@ -59,7 +59,7 @@ export default function Admin() {
           <span className={styles.btn}>Ingresar</span>
         </Link>
     
-        <Link href="/admin/eliminar-producto" className={styles.card}>
+        <Link href="/eliminarProducto" className={styles.card}>
           <h3>Eliminar producto</h3>
           <p>Eliminar productos que ya no se ofrecen.</p>
           <span className={styles.btn}>Ingresar</span>

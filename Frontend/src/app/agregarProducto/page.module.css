@@ -1,0 +1,119 @@
+.main {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  color: #1f2937;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+  box-sizing: border-box;
+}
+
+.volver {
+  display: inline-block;
+  background-color: #ffffff;
+  color: #ea580c;
+  padding: 0.4rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.volver:hover {
+  background-color: #ffedd5;
+  transform: translateX(-3px);
+}
+
+.titulo {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(90deg, #f97316, #fb923c);
+  padding: 1.25rem 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.35);
+  margin: 1.25rem 0 2rem 0;
+}
+
+.formulario {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  border-top: 5px solid #f97316;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  gap: 1.5rem 2rem;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.campo input,
+.campo select {
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.6rem;
+  font-size: 1rem;
+  font-family: inherit;
+  background-color: #ffffff;
+}
+
+.campo input:focus,
+.campo select:focus {
+  outline: 2px solid #f97316;
+  border-color: #f97316;
+}
+
+.btnGuardar {
+  grid-column: 1 / -1;
+  justify-self: start;
+  min-width: 16rem;
+  background-color: #f97316;
+  color: #ffffff;
+  padding: 0.85rem 2rem;
+  border-radius: 0.6rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.35);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.btnGuardar:hover {
+  background-color: #ea580c;
+  transform: translateY(-2px);
+}
+
+.avisoOk,
+.avisoError {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  max-width: 22rem;
+  padding: 0.9rem 1.25rem;
+  border-radius: 0.75rem;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+}
+
+.avisoOk {
+  background-color: #16a34a;
+}
+
+.avisoError {
+  background-color: #dc2626;
+}
+

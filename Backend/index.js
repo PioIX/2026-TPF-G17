@@ -726,3 +726,70 @@ app.post("/modificar-stock", async function (req, res) {
     res.status(500).send({ res: "Error del servidor" });
   }
 });
+
+app.post("/agregar-producto", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const admin = await realizarQuery(
+      "SELECT es_admin FROM Clientes WHERE mail = ?",
+      [req.session.user]
+    );
+
+    if (admin.length === 0 || !admin[0].es_admin) {
+      return res.status(403).send({ res: "No autorizado" });
+    }
+
+    const { nombre, categoria, precio, stock, descripcion, imagen } = req.body;
+
+    const categorias = ["Sanguches", "Hamburguesas", "Snacks", "Bebidas"];
+
+    if (!nombre || !categorias.includes(categoria)) {
+      return res.status(400).send({ res: "Completá el nombre y elegí una categoría válida" });
+    }
+
+    if (!(Number(precio) > 0) || !(Number(stock) >= 0)) {
+      return res.status(400).send({ res: "El precio y el stock tienen que ser números válidos" });
+    }
+
+    await realizarQuery(
+      "INSERT INTO Productos (nombre, categoria, precio, stock, descripcion, imagen) VALUES (?, ?, ?, ?, ?, ?)",
+      [nombre, categoria, Number(precio), Number(stock), descripcion || "", imagen || ""]
+    );
+
+    res.send({ res: "Producto agregado" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+
+app.delete("/eliminar-producto/:id_producto", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const admin = await realizarQuery(
+      "SELECT es_admin FROM Clientes WHERE mail = ?",
+      [req.session.user]
+    );
+
+    if (admin.length === 0 || !admin[0].es_admin) {
+      return res.status(403).send({ res: "No autorizado" });
+    }
+
+    await realizarQuery(
+      "DELETE FROM Productos WHERE id_producto = ?",
+      [req.params.id_producto]
+    );
+
+    res.send({ res: "Producto eliminado" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});

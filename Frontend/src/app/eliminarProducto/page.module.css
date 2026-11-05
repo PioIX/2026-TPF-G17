@@ -1,0 +1,155 @@
+.main {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  color: #1f2937;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+  box-sizing: border-box;
+}
+
+.volver {
+  display: inline-block;
+  background-color: #ffffff;
+  color: #ea580c;
+  padding: 0.4rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.volver:hover {
+  background-color: #ffedd5;
+  transform: translateX(-3px);
+}
+
+.titulo {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(90deg, #f97316, #fb923c);
+  padding: 1.25rem 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.35);
+  margin: 1.25rem 0 2rem 0;
+}
+
+.lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
+  gap: 1.25rem;
+}
+
+.fila {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  border-left: 5px solid #f97316;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fila:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+}
+
+.miniatura {
+  width: 5rem;
+  height: 5rem;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  background-color: #ffedd5;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info strong {
+  font-size: 1.1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.info span {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.confirmar {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btnEliminar,
+.btnSi,
+.btnNo {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.btnEliminar,
+.btnSi {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.btnEliminar:hover,
+.btnSi:hover {
+  background-color: #b91c1c;
+  transform: translateY(-2px);
+}
+
+.btnNo {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.btnNo:hover {
+  background-color: #d1d5db;
+}
+
+.avisoOk,
+.avisoError {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  max-width: 22rem;
+  padding: 0.9rem 1.25rem;
+  border-radius: 0.75rem;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+}
+
+.avisoOk {
+  background-color: #16a34a;
+}
+
+.avisoError {
+  background-color: #dc2626;
+}
+
