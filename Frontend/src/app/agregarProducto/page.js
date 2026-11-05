@@ -9,7 +9,8 @@ export default function AgregarProducto() {
   const [precio, setPrecio] = useState("");
   const [stock, setStock] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [imagen, setImagen] = useState("");
+  const [archivo, setArchivo] = useState(null);
+  const [claveArchivo, setClaveArchivo] = useState(0);
   const [aviso, setAviso] = useState(null);
 
   function mostrarAviso(texto, tipo) {
@@ -22,16 +23,49 @@ export default function AgregarProducto() {
     setPrecio("");
     setStock("");
     setDescripcion("");
-    setImagen("");
+    setArchivo(null);
+    setClaveArchivo(claveArchivo + 1);
   }
 
   function agregar() {
-    fetch("http://localhost:4000/agregar-producto", {
+    if (nombre === "" || precio === "" || stock === "") {
+      mostrarAviso("Completá el nombre, el precio y el stock", "error");
+      return;
+    }
+
+    if (!archivo) {
+      mostrarAviso("Elegí la imagen del producto", "error");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("miArchivo", archivo);
+
+    fetch("/api/upload", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ nombre, categoria, precio, stock, descripcion, imagen }),
+      body: formData,
     })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("No se pudo subir la imagen");
+        }
+        return response.json();
+      })
+      .then((datos) =>
+        fetch("http://localhost:4000/agregar-producto", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            nombre,
+            categoria,
+            precio,
+            stock,
+            descripcion,
+            imagen: datos.nombre,
+          }),
+        })
+      )
       .then((response) =>
         response.json().then((data) => {
           mostrarAviso(data.res, response.ok ? "ok" : "error");
@@ -40,7 +74,7 @@ export default function AgregarProducto() {
           }
         })
       )
-      .catch(() => mostrarAviso("No se pudo conectar con el servidor", "error"));
+      .catch(() => mostrarAviso("No se pudo subir la imagen o conectar con el servidor", "error"));
   }
 
   return (
@@ -51,7 +85,7 @@ export default function AgregarProducto() {
         </div>
       )}
 
-      <Link href="/home" className={styles.volver}>← Volver</Link>
+      <Link href="/admin" className={styles.volver}>← Volver</Link>
       <h1 className={styles.titulo}>Agregar producto</h1>
 
       <div className={styles.formulario}>
@@ -86,8 +120,13 @@ export default function AgregarProducto() {
         </label>
 
         <label className={styles.campo}>
-          Imagen (nombre del archivo, ej: cocacola.png)
-          <input value={imagen} onChange={(e) => setImagen(e.target.value)} />
+          Imagen
+          <input
+            key={claveArchivo}
+            type="file"
+            accept="image/*"
+            onChange={(e) => setArchivo(e.target.files[0])}
+          />
         </label>
 
         <button className={styles.btnGuardar} onClick={agregar}>
@@ -96,4 +135,4 @@ export default function AgregarProducto() {
       </div>
     </main>
   );
-}
+} 
