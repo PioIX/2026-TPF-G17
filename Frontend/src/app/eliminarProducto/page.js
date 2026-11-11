@@ -52,7 +52,7 @@ export default function EliminarProducto() {
         </div>
       )}
 
-      <Link href="/home" className={styles.volver}>← Volver</Link>
+      <Link href="/admin" className={styles.volver}>← Volver</Link>
       <h1 className={styles.titulo}>Eliminar producto</h1>
 
       <div className={styles.lista}>
