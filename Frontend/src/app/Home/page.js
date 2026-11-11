@@ -123,6 +123,10 @@ export default function Home() {
     socket.on("pedidoListo", function (alerta) {
       setAlertas(function (anteriores) { return [...anteriores, alerta]; });
       cargarPedidos();
+
+      socket.on("pedidoNuevo", function (p) {
+      console.log("PEDIDO NUEVO", p);
+});
     });
 
     return function () { socket.disconnect(); };

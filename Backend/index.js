@@ -56,10 +56,70 @@ io.use((socket, next) => {
 
 let contador = 0;
 
+async function esAdmin(mail) {
+  if (!mail) return false;
+  const r = await realizarQuery(
+    "SELECT es_admin FROM Clientes WHERE mail = ?",
+    [mail]
+  );
+  return r.length > 0 && Boolean(r[0].es_admin);
+}
+
+async function soloAdmin(req, res, next) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+    if (!(await esAdmin(req.session.user))) {
+      return res.status(403).send({ res: "No autorizado" });
+    }
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+}
+
+async function pedidosActivos(idUnico) {
+  const filtro = idUnico
+    ? "WHERE p.id_pedido = ?"
+    : "WHERE p.estado IN ('En Preparacion', 'Listo')";
+
+  const pedidos = await realizarQuery(
+    `SELECT p.id_pedido, p.horario, p.total, p.estado, c.mail
+     FROM Pedidos p JOIN Clientes c ON c.id_cliente = p.id_cliente
+     ${filtro} ORDER BY p.id_pedido ASC`,
+    idUnico ? [idUnico] : []
+  );
+  if (pedidos.length === 0) return [];
+
+  const ids = pedidos.map((p) => p.id_pedido);
+  const detalle = await realizarQuery(
+    `SELECT d.id_pedido, d.cantidad, pr.nombre
+     FROM DetallePedido d JOIN Productos pr ON pr.id_producto = d.id_producto
+     WHERE d.id_pedido IN (${ids.map(() => "?").join(",")})`,
+    ids
+  );
+
+  return pedidos.map((p) => ({
+    ...p,
+    items: detalle.filter((d) => d.id_pedido === p.id_pedido),
+  }));
+}
+
+
+
 io.on("connection", (socket) => {
   const req = socket.request;
   if (req.session.user) {
     socket.join("cliente_" + req.session.user);
+
+    esAdmin(req.session.user).then((ok) => {
+      if (ok) {
+        socket.join("admins");
+        console.log("Admin conectado a la room admins:", req.session.user);
+      }
+    });
   }
 
   socket.on("joinRoom", (data) => {
@@ -96,6 +156,7 @@ io.on("connection", (socket) => {
     console.log("Disconnect");
   });
 });
+
 
 app.post("/register", async function (req, res) {
   try {
@@ -404,63 +465,24 @@ app.post("/confirmar-pedido", async function (req, res) {
 
     req.session.carrito = {};
 
-    const id_pedido = pedido.insertId;
-    const id_cliente = cliente[0].id_cliente;
-    const mail = req.session.user;
 
-    setTimeout(async function () {
-      try {
-        await realizarQuery(
-          "UPDATE Pedidos SET estado = 'Listo' WHERE id_pedido = ?",
-          [id_pedido]
-        );
 
-        const mensaje = "Tu pedido #" + id_pedido + " está listo";
 
-        const alerta = await realizarQuery(
-          "INSERT INTO Alerta (id_cliente, id_pedido, mensaje) VALUES (?, ?, ?)",
-          [id_cliente, id_pedido, mensaje]
-        );
 
-        io.to("cliente_" + mail).emit("pedidoListo", {
-          id_alerta: alerta.insertId,
-          id_pedido: id_pedido,
-          mensaje: mensaje,
-        });
 
-        console.log("Pedido " + id_pedido + " listo");
-      } catch (error) {
-        console.error(error);
-      }
-    }, segundos * 1000);
 
-    setTimeout(async function () {
-      try {
-        await realizarQuery(
-          "UPDATE Pedidos SET estado = 'Entregado' WHERE id_pedido = ?",
-          [id_pedido]
-        );
+    
+    const [pedidoNuevo] = await pedidosActivos(pedido.insertId);
+    io.to("admins").emit("pedidoNuevo", pedidoNuevo);
 
-        await realizarQuery(
-          "DELETE FROM Alerta WHERE id_pedido = ?",
-          [id_pedido]
-        );
-
-        io.to("cliente_" + mail).emit("pedidoEntregado", {
-          id_pedido: id_pedido,
-        });
-
-        console.log("Pedido " + id_pedido + " entregado");
-      } catch (error) {
-        console.error(error);
-      }
-    }, (segundos + SEGUNDOS_RETIRO) * 1000);
     res.send({ res: "¡Pedido confirmado!" });
   } catch (error) {
     console.error(error);
     res.status(500).send({ res: "Error del servidor" });
   }
 });
+
+
 app.get("/hamburguesas", async function (req, res) {
   try {
     const productos = await realizarQuery(
