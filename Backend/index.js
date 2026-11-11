@@ -7,7 +7,7 @@ const cors = require("cors");
 const session = require("express-session");
 const { Server } = require("socket.io");
 const { realizarQuery } = require("./modulos/mysql");
-
+const multer = require("multer");
 const app = express();
 const PORT = process.env.PORT || 4000;
 const ORIGENES = ["http://localhost:3000", "http://localhost:3001"];
@@ -28,6 +28,15 @@ const sessionMiddleware = session({
   saveUninitialized: false,
 });
 app.use(sessionMiddleware);
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: path.join(__dirname, "..", "Frontend", "public"),
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + "-" + file.originalname.replace(/\s+/g, ""));
+    },
+  }),
+});
 
 const server = app.listen(PORT, () => {
   console.log(`Servidor NodeJS corriendo en http://localhost:${PORT}/`);
@@ -725,9 +734,8 @@ app.post("/modificar-stock", async function (req, res) {
     console.error(error);
     res.status(500).send({ res: "Error del servidor" });
   }
-});
-
-app.post("/agregar-producto", async function (req, res) {
+}); 
+app.post("/agregar-producto", upload.single("imagen"), async function (req, res) {
   try {
     if (!req.session.user) {
       return res.status(401).send({ res: "No hay sesión activa" });
@@ -742,7 +750,7 @@ app.post("/agregar-producto", async function (req, res) {
       return res.status(403).send({ res: "No autorizado" });
     }
 
-    const { nombre, categoria, precio, stock, descripcion, imagen } = req.body;
+    const { nombre, categoria, precio, stock, descripcion } = req.body;
 
     const categorias = ["Sanguches", "Hamburguesas", "Snacks", "Bebidas"];
 
@@ -754,9 +762,13 @@ app.post("/agregar-producto", async function (req, res) {
       return res.status(400).send({ res: "El precio y el stock tienen que ser números válidos" });
     }
 
+    if (!req.file) {
+      return res.status(400).send({ res: "Elegí la imagen del producto" });
+    }
+
     await realizarQuery(
       "INSERT INTO Productos (nombre, categoria, precio, stock, descripcion, imagen) VALUES (?, ?, ?, ?, ?, ?)",
-      [nombre, categoria, Number(precio), Number(stock), descripcion || "", imagen || ""]
+      [nombre, categoria, Number(precio), Number(stock), descripcion || "", req.file.filename]
     );
 
     res.send({ res: "Producto agregado" });
@@ -765,7 +777,6 @@ app.post("/agregar-producto", async function (req, res) {
     res.status(500).send({ res: "Error del servidor" });
   }
 });
-
 
 app.delete("/eliminar-producto/:id_producto", async function (req, res) {
   try {

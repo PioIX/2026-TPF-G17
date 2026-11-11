@@ -39,33 +39,18 @@ export default function AgregarProducto() {
     }
 
     const formData = new FormData();
-    formData.append("miArchivo", archivo);
+    formData.append("nombre", nombre);
+    formData.append("categoria", categoria);
+    formData.append("precio", precio);
+    formData.append("stock", stock);
+    formData.append("descripcion", descripcion);
+    formData.append("imagen", archivo);
 
-    fetch("/api/upload", {
+    fetch("http://localhost:4000/agregar-producto", {
       method: "POST",
+      credentials: "include",
       body: formData,
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("No se pudo subir la imagen");
-        }
-        return response.json();
-      })
-      .then((datos) =>
-        fetch("http://localhost:4000/agregar-producto", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            nombre,
-            categoria,
-            precio,
-            stock,
-            descripcion,
-            imagen: datos.nombre,
-          }),
-        })
-      )
       .then((response) =>
         response.json().then((data) => {
           mostrarAviso(data.res, response.ok ? "ok" : "error");
@@ -74,7 +59,7 @@ export default function AgregarProducto() {
           }
         })
       )
-      .catch(() => mostrarAviso("No se pudo subir la imagen o conectar con el servidor", "error"));
+      .catch(() => mostrarAviso("No se pudo conectar con el servidor", "error"));
   }
 
   return (
@@ -135,4 +120,4 @@ export default function AgregarProducto() {
       </div>
     </main>
   );
-} 
+}
