@@ -157,8 +157,8 @@ export default function Cocina() {
         </section>
       </div>
 
-      <Link href="/admin" className={styles.volver}>
-        Volver al administrador
+      <Link href="/home" className={styles.volver}>
+        Volver al inicio
       </Link>
     </main>
   );

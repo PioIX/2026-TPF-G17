@@ -821,7 +821,7 @@ app.delete("/eliminar-producto/:id_producto", async function (req, res) {
     }
 
     await realizarQuery(
-      "DELETE FROM Productos WHERE id_producto = ?",
+      "DELETE FROM DetallePedido WHERE id_producto = ?",
       [req.params.id_producto]
     );
 
@@ -913,6 +913,40 @@ app.post("/cocina/pedidos/:id/entregado", soloAdmin, async function (req, res) {
     io.to("admins").emit("pedidoActualizado", { id_pedido: id, estado: "Entregado" });
 
     res.send({ res: "Pedido entregado" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+
+app.post("/modificar-precio", async function (req, res) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send({ res: "No hay sesión activa" });
+    }
+
+    const admin = await realizarQuery(
+      "SELECT es_admin FROM Clientes WHERE mail = ?",
+      [req.session.user]
+    );
+
+    if (admin.length === 0 || !admin[0].es_admin) {
+      return res.status(403).send({ res: "No autorizado" });
+    }
+
+    const { id_producto, precio } = req.body;
+
+    if (!(Number(precio) > 0)) {
+      return res.status(400).send({ res: "El precio tiene que ser mayor a 0" });
+    }
+
+    await realizarQuery(
+      "UPDATE Productos SET precio = ? WHERE id_producto = ?",
+      [Number(precio), id_producto]
+    );
+
+    res.send({ res: "Precio actualizado" });
   } catch (error) {
     console.error(error);
     res.status(500).send({ res: "Error del servidor" });

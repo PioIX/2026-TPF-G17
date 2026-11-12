@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,6 +6,7 @@ import styles from "./page.module.css";
 
 export default function Stock() {
   const [productos, setProductos] = useState([]);
+  const [nuevosPrecios, setNuevosPrecios] = useState({});
 
   function cargarProductos() {
     fetch("http://localhost:4000/productos-admin", {
@@ -41,7 +41,6 @@ export default function Stock() {
     })
       .then(function (respuesta) {
         return respuesta.json().then(function (datos) {
-          // alert(datos.res);
 
           if (respuesta.ok) {
             cargarProductos();
@@ -53,13 +52,53 @@ export default function Stock() {
       });
   }
 
+  function cambiarInputPrecio(id_producto, valor) {
+    setNuevosPrecios(function (anteriores) {
+      return { ...anteriores, [id_producto]: valor };
+    });
+  }
+
+  function modificarPrecio(id_producto) {
+    const precio = nuevosPrecios[id_producto];
+
+    if (!(Number(precio) > 0)) {
+      alert("Ingresá un precio mayor a 0");
+      return;
+    }
+
+    fetch("http://localhost:4000/modificar-precio", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        id_producto: id_producto,
+        precio: Number(precio)
+      })
+    })
+      .then(function (respuesta) {
+        return respuesta.json().then(function (datos) {
+          if (respuesta.ok) {
+            cambiarInputPrecio(id_producto, "");
+            cargarProductos();
+          } else {
+            alert(datos.res);
+          }
+        });
+      })
+      .catch(function () {
+        alert("No se pudo modificar el precio");
+      });
+  }
+
   return (
     <main className={styles.main}>
       <title>Buffetazo - Gestión de stock</title>
 
       <header className={styles.header}>
         <h1 className={styles.titulo}>Gestión de stock</h1>
-        <p>Administrá las cantidades de tus productos</p>
+        <p>Administrá las cantidades y los precios de tus productos</p>
       </header>
 
       <Link href="/admin" className={styles.volver}>
@@ -104,6 +143,33 @@ export default function Stock() {
                     }}
                   >
                     +
+                  </button>
+                </div>
+
+                <p className={styles.precio}>
+                  Precio actual: ${producto.precio}
+                </p>
+
+                <div className={styles.controlesPrecio}>
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    placeholder="Nuevo precio"
+                    value={nuevosPrecios[producto.id_producto] || ""}
+                    onChange={function (e) {
+                      cambiarInputPrecio(producto.id_producto, e.target.value);
+                    }}
+                    className={styles.inputPrecio}
+                  />
+
+                  <button
+                    className={styles.btnPrecio}
+                    onClick={function () {
+                      modificarPrecio(producto.id_producto);
+                    }}
+                  >
+                    Cambiar precio
                   </button>
                 </div>
               </div>
