@@ -48,18 +48,18 @@ export default function Home() {
         setCargandoPedidos(false);
       });
   }
-  
+
   function descartarAlerta(id_alerta) {
-  fetch("http://localhost:4000/alertas/" + id_alerta, {
-    method: "DELETE",
-    credentials: "include"
-  }).then(function () {
-    setAlertas(function (anteriores) {
-      return anteriores.filter(function (a) { return a.id_alerta !== id_alerta; });
+    fetch("http://localhost:4000/alertas/" + id_alerta, {
+      method: "DELETE",
+      credentials: "include"
+    }).then(function () {
+      setAlertas(function (anteriores) {
+        return anteriores.filter(function (a) { return a.id_alerta !== id_alerta; });
+      });
+      cargarPedidos();
     });
-    cargarPedidos();
-  });
-}
+  }
 
   function claseEstado(estado) {
     if (estado === "Listo") return styles.estadoListo;
@@ -125,6 +125,10 @@ export default function Home() {
       cargarPedidos();
     });
 
+    socket.on("pedidoEntregado", function () {
+      cargarPedidos();
+    });
+
     return function () { socket.disconnect(); };
   }, []);
 
@@ -150,9 +154,14 @@ export default function Home() {
           </Link>
 
           {esAdmin && (
-            <Link href="/admin" className={styles.btnAdmin}>
-              Administrador
-            </Link>
+            <>
+              <Link href="/cocina" className={styles.btnCocina}>
+                Cocina
+              </Link>
+              <Link href="/admin" className={styles.btnAdmin}>
+                Administrador
+              </Link>
+            </>
           )}
 
           <button onClick={cerrarSesion} className={styles.btnLogout}>Cerrar sesión</button>
