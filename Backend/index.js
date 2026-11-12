@@ -621,11 +621,16 @@ app.delete("/alertas/:id_alerta", async function (req, res) {
       [req.params.id_alerta, cliente[0].id_cliente]
     );
 
-    if (alerta.length > 0) {
+      if (alerta.length > 0) {
       await realizarQuery(
         "UPDATE Pedidos SET estado = 'Entregado' WHERE id_pedido = ?",
         [alerta[0].id_pedido]
       );
+
+      io.to("admins").emit("pedidoActualizado", {
+        id_pedido: alerta[0].id_pedido,
+        estado: "Entregado",
+      });
     }
 
     await realizarQuery(
@@ -821,6 +826,93 @@ app.delete("/eliminar-producto/:id_producto", async function (req, res) {
     );
 
     res.send({ res: "Producto eliminado" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+
+app.get("/cocina/pedidos", soloAdmin, async function (req, res) {
+  try {
+    res.send(await pedidosActivos());
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+app.post("/cocina/pedidos/:id/listo", soloAdmin, async function (req, res) {
+  try {
+    const id = Number(req.params.id);
+
+    const filas = await realizarQuery(
+      `SELECT p.id_pedido, p.id_cliente, p.estado, c.mail
+       FROM Pedidos p JOIN Clientes c ON c.id_cliente = p.id_cliente
+       WHERE p.id_pedido = ?`,
+      [id]
+    );
+    if (filas.length === 0) {
+      return res.status(404).send({ res: "El pedido no existe" });
+    }
+
+    const pedido = filas[0];
+    if (pedido.estado !== "En Preparacion") {
+      return res.status(400).send({ res: "El pedido no está en preparación" });
+    }
+
+    await realizarQuery(
+      "UPDATE Pedidos SET estado = 'Listo' WHERE id_pedido = ?",
+      [id]
+    );
+
+    const mensaje = "Tu pedido #" + id + " está listo";
+    const alerta = await realizarQuery(
+      "INSERT INTO Alerta (id_cliente, id_pedido, mensaje) VALUES (?, ?, ?)",
+      [pedido.id_cliente, id, mensaje]
+    );
+
+    io.to("cliente_" + pedido.mail).emit("pedidoListo", {
+      id_alerta: alerta.insertId,
+      id_pedido: id,
+      mensaje: mensaje,
+    });
+    io.to("admins").emit("pedidoActualizado", { id_pedido: id, estado: "Listo" });
+
+    res.send({ res: "Pedido marcado como listo" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ res: "Error del servidor" });
+  }
+});
+
+app.post("/cocina/pedidos/:id/entregado", soloAdmin, async function (req, res) {
+  try {
+    const id = Number(req.params.id);
+
+    const filas = await realizarQuery(
+      `SELECT p.estado, c.mail
+       FROM Pedidos p JOIN Clientes c ON c.id_cliente = p.id_cliente
+       WHERE p.id_pedido = ?`,
+      [id]
+    );
+    if (filas.length === 0) {
+      return res.status(404).send({ res: "El pedido no existe" });
+    }
+    if (filas[0].estado !== "Listo") {
+      return res.status(400).send({ res: "El pedido todavía no está listo" });
+    }
+
+    await realizarQuery(
+      "UPDATE Pedidos SET estado = 'Entregado' WHERE id_pedido = ?",
+      [id]
+    );
+    await realizarQuery("DELETE FROM Alerta WHERE id_pedido = ?", [id]);
+
+    io.to("cliente_" + filas[0].mail).emit("pedidoEntregado", { id_pedido: id });
+    io.to("admins").emit("pedidoActualizado", { id_pedido: id, estado: "Entregado" });
+
+    res.send({ res: "Pedido entregado" });
   } catch (error) {
     console.error(error);
     res.status(500).send({ res: "Error del servidor" });

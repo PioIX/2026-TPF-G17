@@ -380,3 +380,17 @@
 .btnAdmin:hover {
   background-color: #111827;
 }
+
+.btnCocina {
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.btnCocina:hover {
+  background-color: #1d4ed8;
+}
