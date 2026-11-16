@@ -3,7 +3,6 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS DetallePedido;
 DROP TABLE IF EXISTS Alerta;
 DROP TABLE IF EXISTS Pedidos;
-DROP TABLE IF EXISTS Saldo;
 DROP TABLE IF EXISTS Productos;
 DROP TABLE IF EXISTS Clientes;
 
@@ -14,7 +13,7 @@ CREATE TABLE Clientes (
     mail VARCHAR(100),
     contrasena VARCHAR(100),
     es_admin BOOL,
-    saldo DECIMAL(10,2) NOT NULL DEFAULT 0,
+    saldo INT NOT NULL DEFAULT 0,
     PRIMARY KEY (id_cliente)
 );
 
@@ -27,15 +26,6 @@ CREATE TABLE Productos (
     descripcion VARCHAR(100),
     imagen VARCHAR(100),
     PRIMARY KEY (id_producto)
-);
-
-CREATE TABLE Saldo (
-    id_saldo INT AUTO_INCREMENT,
-    id_cliente INT,
-    metodo_pago VARCHAR(100),
-    cantidad_saldo BIGINT,
-    PRIMARY KEY (id_saldo),
-    FOREIGN KEY (id_cliente) REFERENCES Clientes(id_cliente)
 );
 
 CREATE TABLE Pedidos (
@@ -76,10 +66,6 @@ INSERT INTO Pedidos (id_cliente, horario, total, estado) VALUES
     (1, '10:10:00', 1500, 'Finalizado'),
     (2, '08:40:00', 2000, 'En Preparacion');
 
-INSERT INTO Saldo (id_cliente, metodo_pago, cantidad_saldo) VALUES 
-    (1, 'Mercado Pago', 20000),
-    (2, 'Efectivo', 100);
-    
 INSERT INTO Productos (nombre, categoria, precio, stock, descripcion, imagen) VALUES
     ('Sánguche Queso', 'Sanguches', 5000, 50, 'Queso', 'sanguchequeso.png'),
     ('Sánguche Jamón y Queso', 'Sanguches', 6000, 50, 'Jamon y Queso', 'sanguchejamonyqueso.png'),
