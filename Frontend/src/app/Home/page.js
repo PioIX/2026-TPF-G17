@@ -67,16 +67,6 @@ export default function Home() {
     return styles.estadoPendiente;
   }
 
-  function descartarAlerta(id_alerta) {
-    fetch("http://localhost:4000/alertas/" + id_alerta, {
-      method: "DELETE",
-      credentials: "include"
-    }).then(function () {
-      setAlertas(function (anteriores) {
-        return anteriores.filter(function (a) { return a.id_alerta !== id_alerta; });
-      });
-    });
-  }
 
   useEffect(function () {
     cargarPedidos();
