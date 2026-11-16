@@ -825,6 +825,11 @@ app.delete("/eliminar-producto/:id_producto", async function (req, res) {
       [req.params.id_producto]
     );
 
+    await realizarQuery(
+      "DELETE FROM Productos WHERE id_producto = ?",
+      [req.params.id_producto]
+    );
+
     res.send({ res: "Producto eliminado" });
   } catch (error) {
     console.error(error);
