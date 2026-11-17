@@ -1,5 +1,9 @@
 const path = require("path");
-require("dotenv").config({ path: path.join(__dirname, "pio.env") });
+const fs = require("fs");
+const envHome = path.join(__dirname, "home.env");
+require("dotenv").config({
+  path: fs.existsSync(envHome) ? envHome : path.join(__dirname, "pio.env"),
+});
 console.log("MYSQL_HOST:", process.env.MYSQL_HOST);
 
 const express = require("express");
