@@ -58,10 +58,10 @@
 .imagen {
   width: 100%;
   aspect-ratio: 4 / 3;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 0.75rem;
   margin-bottom: 1rem;
-  background-color: #ffedd5;
+  background-color: #ffffff;
 }
 
 .card h3 {
