@@ -671,12 +671,9 @@ app.post("/actualizar-cantidad", async function (req, res) {
 });
 
 
-app.get("/productos-admin", async function (req, res) {
+app.get("/productos-admin",soloAdmin, async function (req, res) {
   try {
-    if (!req.session.user) {
-      return res.status(401).send({ res: "No hay sesión activa" });
-    }
-
+    
     const resultado = await realizarQuery(
       "SELECT * FROM Productos"
     );
@@ -689,12 +686,9 @@ app.get("/productos-admin", async function (req, res) {
   }
 });
 
-app.post("/modificar-stock", async function (req, res) {
+app.post("/modificar-stock",soloAdmin, async function (req, res) {
   try {
-    if (!req.session.user) {
-      return res.status(401).send({ res: "No hay sesión activa" });
-    }
-
+    
     const { id_producto, cantidad } = req.body;
 
     const resultado = await realizarQuery(
@@ -724,21 +718,10 @@ app.post("/modificar-stock", async function (req, res) {
     res.status(500).send({ res: "Error del servidor" });
   }
 }); 
-app.post("/agregar-producto", upload.single("imagen"), async function (req, res) {
+
+app.post("/agregar-producto", soloAdmin, upload.single("imagen"), async function (req, res) {
   try {
-    if (!req.session.user) {
-      return res.status(401).send({ res: "No hay sesión activa" });
-    }
-
-    const admin = await realizarQuery(
-      "SELECT es_admin FROM Clientes WHERE mail = ?",
-      [req.session.user]
-    );
-
-    if (admin.length === 0 || !admin[0].es_admin) {
-      return res.status(403).send({ res: "No autorizado" });
-    }
-
+    
     const { nombre, categoria, precio, stock, descripcion } = req.body;
 
     const categorias = ["Sanguches", "Hamburguesas", "Snacks", "Bebidas"];
@@ -767,21 +750,9 @@ app.post("/agregar-producto", upload.single("imagen"), async function (req, res)
   }
 });
 
-app.delete("/eliminar-producto/:id_producto", async function (req, res) {
+app.delete("/eliminar-producto/:id_producto", soloAdmin, async function (req, res) {
   try {
-    if (!req.session.user) {
-      return res.status(401).send({ res: "No hay sesión activa" });
-    }
-
-    const admin = await realizarQuery(
-      "SELECT es_admin FROM Clientes WHERE mail = ?",
-      [req.session.user]
-    );
-
-    if (admin.length === 0 || !admin[0].es_admin) {
-      return res.status(403).send({ res: "No autorizado" });
-    }
-
+    
     await realizarQuery(
       "DELETE FROM DetallePedido WHERE id_producto = ?",
       [req.params.id_producto]
@@ -887,21 +858,9 @@ app.post("/cocina/pedidos/:id/entregado", soloAdmin, async function (req, res) {
 });
 
 
-app.post("/modificar-precio", async function (req, res) {
+app.post("/modificar-precio", soloAdmin, async function (req, res) {
   try {
-    if (!req.session.user) {
-      return res.status(401).send({ res: "No hay sesión activa" });
-    }
-
-    const admin = await realizarQuery(
-      "SELECT es_admin FROM Clientes WHERE mail = ?",
-      [req.session.user]
-    );
-
-    if (admin.length === 0 || !admin[0].es_admin) {
-      return res.status(403).send({ res: "No autorizado" });
-    }
-
+    
     const { id_producto, precio } = req.body;
 
     if (!(Number(precio) > 0)) {
