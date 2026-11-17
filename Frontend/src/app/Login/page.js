@@ -14,7 +14,7 @@ export default function Login() {
 
     try {
       const response = await fetch("http://localhost:4000/login", {
-|        method: "POST",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ mail, contrasena }),
