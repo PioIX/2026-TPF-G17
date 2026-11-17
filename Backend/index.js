@@ -15,13 +15,7 @@ const multer = require("multer");
 const app = express();
 const PORT = process.env.PORT || 4000;
 const ORIGENES = ["http://localhost:3000", "http://localhost:3001"];
-const TIEMPOS = {
-  Hamburguesas: 15,
-  Sanguches: 10,
-  Snacks: 10,
-  Bebidas: 10,
-};
-const SEGUNDOS_RETIRO = 20;
+
 
 app.use(cors({ origin: ORIGENES, credentials: true }));
 app.use(express.json());
@@ -231,37 +225,6 @@ app.get("/productos", async function (req, res) {
   }
 });
 
-app.get("/perfil", async function (req, res) {
-  try {
-    if (!req.session.user) {
-      return res.status(401).send({ res: "No hay sesión activa" });
-    }
-
-
-    const usuario = await realizarQuery(
-      "SELECT mail, saldo FROM Clientes WHERE mail = ?",
-      [req.session.user]
-    );
-
-    if (usuario.length === 0) {
-      return res.status(404).send({ res: "Usuario no encontrado" });
-    }
-
-
-    const pedidos = await realizarQuery(
-      "SELECT * FROM Pedidos WHERE id_cliente = ? AND estado != 'entregado'",
-      [req.session.user]
-    );
-
-    res.send({
-      usuario: usuario[0],
-      pedidosActivos: pedidos
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ res: "Error del servidor" });
-  }
-});
 
 
 app.get("/saldo", async function (req, res) {
@@ -414,15 +377,10 @@ app.post("/confirmar-pedido", async function (req, res) {
     }
 
     let total = 0;
-    let segundos = 0;
-
+    
     productos.forEach(function (p) {
       total += p.precio * carrito[p.id_producto];
-
-      const tiempo = TIEMPOS[p.categoria] || 5;
-      if (tiempo > segundos) {
-        segundos = tiempo;
-      }
+      
     });
 
     if (Number(cliente[0].saldo) < total) {
