@@ -5,6 +5,7 @@ import Link from "next/link";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { io } from "socket.io-client";
+import API_URL from "@/config/api";
 
 export default function Home() {
   const [saldo, setSaldo] = useState(0);
@@ -17,7 +18,7 @@ export default function Home() {
 
   async function cerrarSesion() {
     try {
-      const response = await fetch("http://localhost:4000/logout", {
+      const response = await fetch(API_URL + "/logout", {
         method: "POST",
         credentials: "include"
       });
@@ -35,7 +36,7 @@ export default function Home() {
   }
 
   function cargarPedidos() {
-    fetch("http://localhost:4000/mis-pedidos", {
+    fetch(API_URL + "/mis-pedidos", {
       method: "GET",
       credentials: "include"
     })
@@ -50,7 +51,7 @@ export default function Home() {
   }
 
   function descartarAlerta(id_alerta) {
-    fetch("http://localhost:4000/alertas/" + id_alerta, {
+    fetch(API_URL + "/alertas/" + id_alerta, {
       method: "DELETE",
       credentials: "include"
     }).then(function () {
@@ -73,7 +74,7 @@ export default function Home() {
   }, []);
 
   useEffect(function () {
-    fetch("http://localhost:4000/saldo", {
+    fetch(API_URL + "/saldo", {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       credentials: "include"
@@ -87,7 +88,7 @@ export default function Home() {
   }, []);
 
   useEffect(function () {
-    fetch("http://localhost:4000/rol", {
+    fetch(API_URL + "/rol", {
       method: "GET",
       credentials: "include"
     })
@@ -97,7 +98,7 @@ export default function Home() {
   }, []);
 
   useEffect(function () {
-    fetch("http://localhost:4000/alertas", {
+    fetch(API_URL + "/alertas", {
       method: "GET",
       credentials: "include"
     })
@@ -108,7 +109,7 @@ export default function Home() {
         }
       });
 
-    const socket = io("http://localhost:4000", { withCredentials: true });
+    const socket = io(API_URL + "", { withCredentials: true });
 
     socket.on("pedidoListo", function (alerta) {
       setAlertas(function (anteriores) { return [...anteriores, alerta]; });

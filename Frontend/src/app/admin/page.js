@@ -1,5 +1,6 @@
 
 "use client";
+import API_URL from "@/config/api";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -11,7 +12,7 @@ export default function Admin() {
   const router = useRouter();
 
   useEffect(function () {
-    fetch("http://localhost:4000/rol", {
+    fetch(API_URL + "/rol", {
       method: "GET",
       credentials: "include"
     })

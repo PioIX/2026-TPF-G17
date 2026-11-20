@@ -1,5 +1,6 @@
 
 "use client";
+import API_URL from "@/config/api";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
@@ -13,7 +14,7 @@ export default function Register() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:4000/register", {
+      const response = await fetch(API_URL + "/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mail, contrasena }),

@@ -1,4 +1,5 @@
 "use client";
+import API_URL from "@/config/api";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -6,7 +7,7 @@ import Link from "next/link";
 import { io } from "socket.io-client";
 import styles from "./page.module.css";
 
-const API = "http://localhost:4000";
+const API = API_URL + "";
 
 export default function Cocina() {
   const [autorizado, setAutorizado] = useState(false);

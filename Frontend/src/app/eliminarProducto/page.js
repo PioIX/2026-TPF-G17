@@ -1,4 +1,5 @@
 "use client";
+import API_URL from "@/config/api";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
@@ -14,7 +15,7 @@ export default function EliminarProducto() {
   }
 
   function cargarProductos() {
-    fetch("http://localhost:4000/productos", { credentials: "include" })
+    fetch(API_URL + "/productos", { credentials: "include" })
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -28,7 +29,7 @@ export default function EliminarProducto() {
   }, []);
 
   function eliminar(id_producto) {
-    fetch("http://localhost:4000/eliminar-producto/" + id_producto, {
+    fetch(API_URL + "/eliminar-producto/" + id_producto, {
       method: "DELETE",
       credentials: "include",
     })

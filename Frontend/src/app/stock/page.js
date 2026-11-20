@@ -1,4 +1,5 @@
 "use client";
+import API_URL from "@/config/api";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -9,7 +10,7 @@ export default function Stock() {
   const [nuevosPrecios, setNuevosPrecios] = useState({});
 
   function cargarProductos() {
-    fetch("http://localhost:4000/productos-admin", {
+    fetch(API_URL + "/productos-admin", {
       credentials: "include"
     })
       .then(function (respuesta) {
@@ -28,7 +29,7 @@ export default function Stock() {
   }, []);
 
   function modificarStock(id_producto, cantidad) {
-    fetch("http://localhost:4000/modificar-stock", {
+    fetch(API_URL + "/modificar-stock", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -66,7 +67,7 @@ export default function Stock() {
       return;
     }
 
-    fetch("http://localhost:4000/modificar-precio", {
+    fetch(API_URL + "/modificar-precio", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

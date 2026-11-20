@@ -1,5 +1,6 @@
 
 "use client";
+import API_URL from "@/config/api";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -10,7 +11,7 @@ export default function Carrito() {
   const [total, setTotal] = useState(0);
 
   function cargarCarrito() {
-    fetch("http://localhost:4000/carrito", {
+    fetch(API_URL + "/carrito", {
       credentials: "include"
     })
       .then(function (respuesta) { return respuesta.json(); })
@@ -34,7 +35,7 @@ export default function Carrito() {
       return;
     }
 
-    fetch("http://localhost:4000/actualizar-cantidad", {
+    fetch(API_URL + "/actualizar-cantidad", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -57,7 +58,7 @@ export default function Carrito() {
   }
 
   function confirmar() {
-    fetch("http://localhost:4000/confirmar-pedido", {
+    fetch(API_URL + "/confirmar-pedido", {
       method: "POST",
       credentials: "include",
     })
@@ -75,7 +76,7 @@ export default function Carrito() {
   }
 
   function eliminar(id_producto) {
-    fetch("http://localhost:4000/quitar-carrito/" + id_producto, {
+    fetch(API_URL + "/quitar-carrito/" + id_producto, {
       method: "DELETE",
       credentials: "include"
     })

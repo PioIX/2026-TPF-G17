@@ -1,4 +1,5 @@
 "use client";
+import API_URL from "@/config/api";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,7 +12,7 @@ export default function CargarSaldo() {
   const handleSaldo = async (e) => {
 
     try {
-      const response = await fetch("http://localhost:4000/cargar-saldo", {
+      const response = await fetch(API_URL + "/cargar-saldo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

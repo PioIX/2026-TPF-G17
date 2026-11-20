@@ -1,4 +1,5 @@
 "use client";
+import API_URL from "@/config/api";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
@@ -9,7 +10,7 @@ export default function Sanguches() {
   const [saldo, setSaldo] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:4000/sanguches", {
+    fetch(API_URL + "/sanguches", {
       credentials: "include",
     })
       .then((response) => response.json())
@@ -24,7 +25,7 @@ export default function Sanguches() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:4000/saldo", { credentials: "include" })
+    fetch(API_URL + "/saldo", { credentials: "include" })
       .then((response) => response.json())
       .then((data) => {
         if (data.saldo !== undefined) setSaldo(data.saldo);
@@ -32,7 +33,7 @@ export default function Sanguches() {
   }, []);
 
   function agregar(id_producto) {
-    fetch("http://localhost:4000/agregar-carrito", {
+    fetch(API_URL + "/agregar-carrito", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

@@ -1,4 +1,5 @@
 "use client";
+import API_URL from "@/config/api";
 import { useState } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
@@ -46,7 +47,7 @@ export default function AgregarProducto() {
     formData.append("descripcion", descripcion);
     formData.append("imagen", archivo);
 
-    fetch("http://localhost:4000/agregar-producto", {
+    fetch(API_URL + "/agregar-producto", {
       method: "POST",
       credentials: "include",
       body: formData,
